@@ -1,0 +1,69 @@
+proxy_cache_path /var/cache/ea-nginx/proxy/[% ServerName %] levels=1:2 keys_zone=[% ServerName %]:10m inactive=60m;
+
+server {
+        server_name douglassandassociates.com www.douglassandassociates.com;
+        root "/home/douglass/public_html";
+        index index.html index.htm;
+
+
+        set $CPANEL_PROXY_CACHE douglassandassociates;
+        set $CPANEL_SKIP_PROXY_CACHING 0;
+
+
+   ssl_protocols TLSv1.2 TLSv1.3;
+    proxy_ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE>
+    proxy_ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA2>
+
+
+    location / {
+        proxy_cache $CPANEL_PROXY_CACHE;
+        proxy_no_cache $CPANEL_SKIP_PROXY_CACHING;
+        proxy_cache_bypass $CPANEL_SKIP_PROXY_CACHING;
+
+        proxy_cache_valid 200 301 302 60m;
+        proxy_cache_valid 404 1m;
+        proxy_cache_use_stale error timeout http_429 http_500 http_502 http_503 http_504;
+        proxy_cache_background_update on;
+        proxy_cache_revalidate on;
+        proxy_cache_min_uses 1;
+        proxy_cache_lock off;
+
+        proxy_pass $scheme://apache_backend_${scheme}_149_255_35_67;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        add_header X-Cache-Status $upstream_cache_status;
+    }
+
+    listen 443 ssl http2; # managed by Certbot
+    listen 80;
+    #ssl_certificate /etc/letsencrypt/live/douglassandassociates.com/fullchain.pem; # managed by Certbot
+    #ssl_certificate_key /etc/letsencrypt/live/douglassandassociates.com/privkey.pem; # managed by Certbot
+
+    ssl_certificate /etc/ssl/virtualmin/1720855497253511/ssl.combined;
+    ssl_certificate_key /etc/ssl/virtualmin/1720855497253511/ssl.key;
+
+
+    #include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+    # Add these settings for better HTTP/2 support
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+
+
+    include uninet-individuals/site.conf;
+}
+
+ #server {
+#    return 301 https://$host$request_uri;
+
+#    listen 80;
+#    server_name douglassandassociates.com www.douglassandassociates.com;
+#    return 404; # managed by Certbot
+#}
+

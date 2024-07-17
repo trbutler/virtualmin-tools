@@ -15,6 +15,11 @@ use Data::Dumper;
 for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
     my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
     print $vhost->cmd_config('ServerName');
+    
+    # Collect virtual domains
+    for my $vhost ($ac->cmd_context('ServerName')) {
+        print $vhost . "\n";
+    }
 
    # my $vhost_server_name = $vh->cmd_config('ServerName');
    # my $vhost_doc_root    = $vh->cmd_config('DocumentRoot');
