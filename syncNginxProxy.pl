@@ -14,7 +14,7 @@ use Data::Dumper;
 
 for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
     my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
-    print Dumper $vh;
+    print $vhost->cmd_config('ServerName');
 
    # my $vhost_server_name = $vh->cmd_config('ServerName');
    # my $vhost_doc_root    = $vh->cmd_config('DocumentRoot');
