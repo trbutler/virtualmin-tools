@@ -13,6 +13,7 @@ my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $a
 use Data::Dumper;
 
 for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
+    my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
     print Dumper $vh;
 
    # my $vhost_server_name = $vh->cmd_config('ServerName');
