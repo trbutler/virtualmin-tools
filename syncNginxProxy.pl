@@ -16,7 +16,8 @@ for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
     my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
     
     # Collect virtual domains
-    my @serverNames = $vhost->cmd_config('ServerName');
+    my @serverNames = $vhost->cmd_config('ServerAlias');
+    push (@serverNames, $vhost->cmd_config('ServerName'));
     print Dumper @serverNames;
 
     # foreach (@serverNames) {
