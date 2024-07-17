@@ -38,9 +38,9 @@ for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
 # Produce template
 my $template = Template->new();
 my $output;
-$template->process('nginxProxyTemplate.tt', $parameters, \$output) || die $template->error();
+$template->process('nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'VirtualminServer'}) || die $template->error();
 
-print $output;
+#print $output;
 
 # # Access the parameters in the Apache configuration file
 # my $hostname = $apacheConfig->cmd_config('ServerName');
