@@ -17,7 +17,7 @@ for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
     print $vhost->cmd_config('ServerName');
     
     # Collect virtual domains
-    for my $vhost ($apacheConfig->cmd_context('ServerName')) {
+    for my $vhost ($apacheConfig->cmd_config_array('ServerName')) {
         print $vhost . "\n";
     }
 
