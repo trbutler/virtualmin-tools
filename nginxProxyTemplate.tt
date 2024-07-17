@@ -31,13 +31,16 @@ server {
         add_header X-Cache-Status $upstream_cache_status;
     }
 
-    listen 443 ssl http2; # managed by Certbot
-    listen 80;
-
+    [% IF ssl_certificate %]
     # SSL Settings
+    listen 443 ssl http2; # managed by Certbot
     ssl_certificate [% ssl_certificate %];
     ssl_certificate_key [% ssl_certificate_key %];
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+    [% ELSE %]
+    listen 80;
+    [% END %]
+
 
     # Add these settings for better HTTP/2 support
     ssl_stapling on;
@@ -47,6 +50,7 @@ server {
     include uninet-individuals/site.conf;
 }
 
+[% IF ssl_certificate %]
 server {
     # Force SSL.
     return 301 https://$host$request_uri;
@@ -54,4 +58,5 @@ server {
     server_name [% server_name %];
     return 404; # managed by Certbot
 }
+[% END %]
 
