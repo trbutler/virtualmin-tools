@@ -38,7 +38,7 @@ for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
 # Produce template
 my $template = Template->new();
 my $output;
-$template->process('conditional.tt', $parameters, \$output) || die $template->error();
+$template->process('nginxProxyTemplate.tt', $parameters, \$output) || die $template->error();
 
 print $output;
 
