@@ -2,13 +2,15 @@
 
 use strict;
 use warnings;
+use Apache::ConfigFile;
+use Template;
 
 # Open the Apache configuration file for reading
-my $apacheFile = shift @ARGV;
+my $parameters = {};
+$parameters->{'VirtualminServer'} = shift @ARGV;
 
 # Use the Apache::ConfigFile module to parse the Apache configuration file
-use Apache::ConfigFile;
-my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $apacheFile . '.conf');
+my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $parameters->{'VirtualminServer'} . '.conf');
 
 use Data::Dumper;
 
@@ -18,7 +20,12 @@ for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
     # Collect virtual domains
     my @serverNames = $vhost->cmd_config('ServerAlias');
     push (@serverNames, $vhost->cmd_config('ServerName'));
-    print Dumper @serverNames;
+    $parameters->{'server_name'} = join(' ', @serverNames);
+    $parameters->{'root'} = $vhost->cmd_config('DocumentRoot');
+
+    # SSL Parameters
+    $parameters->{'ssl_certificate'} = $vhost->cmd_config('SSLCertificateFile');
+    $parameters->{'ssl_certificate_key'} = $vhost->cmd_config('SSLCertificateKeyFile');
 
     # foreach (@serverNames) {
     #     print $_ . "\n";
@@ -27,6 +34,13 @@ for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
    # my $vhost_server_name = $vh->cmd_config('ServerName');
    # my $vhost_doc_root    = $vh->cmd_config('DocumentRoot');
 } 
+
+# Produce template
+my $template = Template->new();
+my $output;
+$template->process('conditional.tt', $parameters, \$output) || die $template->error();
+
+print $output;
 
 # # Access the parameters in the Apache configuration file
 # my $hostname = $apacheConfig->cmd_config('ServerName');
