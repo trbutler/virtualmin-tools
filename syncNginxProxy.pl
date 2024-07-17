@@ -16,10 +16,12 @@ for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
     my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
     
     # Collect virtual domains
-    my @vhost = $apacheConfig->cmd_config('ServerName');
-    foreach (@vhost) {
-        print $_ . "\n";
-    }
+    my @serverNames = $apacheConfig->cmd_config('ServerName');
+    print Dumper @serverNames;
+
+    # foreach (@serverNames) {
+    #     print $_ . "\n";
+    # }
 
    # my $vhost_server_name = $vh->cmd_config('ServerName');
    # my $vhost_doc_root    = $vh->cmd_config('DocumentRoot');
