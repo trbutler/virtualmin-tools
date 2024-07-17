@@ -14,8 +14,7 @@ use Data::Dumper;
 
 for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
     my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
-    print $vhost->cmd_config('ServerName');
-    
+   
     # Collect virtual domains
     for my $vhost ($apacheConfig->cmd_config_array('ServerName')) {
         print $vhost . "\n";
