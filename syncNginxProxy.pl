@@ -131,10 +131,8 @@ sub create {
             unless (-d $upstreamConfigPath) {
                 make_path($upstreamConfigPath) or die "Failed to create path: $upstreamConfigPath";
             }
-            
-            my $output;
+
             $template->process('nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'}) || die $template->error();
-            say STDERR $output;
         }
 
         return 1;
