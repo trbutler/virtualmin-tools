@@ -123,13 +123,20 @@ sub create {
         symlink '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}, '/etc/nginx/sites-enabled/' . $parameters->{'TargetConfig'};
 
         # Save IP proxy config template.
-        my $upstreamConfigPath = '/etc/nginx/upstreamConfig/';
-        unless (-d $upstreamConfigPath) {
-            make_path($upstreamConfigPath) or die "Failed to create path: $upstreamConfigPath";
+        unless $ipsInUse->{ $parameters->{'ip'} } {
+            $ipsInUse->{ $parameters->{'ip'} } = 1;
+        
+            # does the proxy upstream config directory exist?
+            my $upstreamConfigPath = '/etc/nginx/upstreamConfig/';
+            unless (-d $upstreamConfigPath) {
+                make_path($upstreamConfigPath) or die "Failed to create path: $upstreamConfigPath";
+            }
+            
+            my $output;
+            $template->process('nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'}) || die $template->error();
+            say STDERR $output;
         }
-        my $output;
-        $template->process('nginxProxyUpstreamTemplate.tt', $parameters, \$output); #$upstreamConfigPath . $parameters->{'ipUnderscore'}) || die $template->error();
-        say STDERR $output;
+
         return 1;
     }
 }
