@@ -8,7 +8,6 @@ use Getopt::Long;
 use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
-use File::Path qw(make_path);
 
 my ($target, $targetAll, $create, $delete, $test, $modification, $ipsInUse);
 
