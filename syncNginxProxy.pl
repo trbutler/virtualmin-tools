@@ -43,9 +43,7 @@ if ($create) {
     # Open the Apache configuration file for reading
     my $parameters = {};
     $parameters->{'TargetConfig'} = $target;
-
-    $VIRTUALSERVER_DOM;
-
+    
     # Use the Apache::ConfigFile module to parse the Apache configuration file
     my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $parameters->{'TargetConfig'} . '.conf');
 
