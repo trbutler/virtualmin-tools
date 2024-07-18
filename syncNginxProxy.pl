@@ -101,7 +101,7 @@ sub create {
     } 
 
     # Produce template
-    my $template = Template->new();
+    my $template = Template->new( INCLUDE_PATH => $Bin );
     my $output;
 
     # Make sure cache directory exists
@@ -111,12 +111,12 @@ sub create {
     }
 
     if ($test) {
-        $template->process($Bin . '/nginxProxyTemplate.tt', $parameters, \$output) || die $template->error();
+        $template->process('nginxProxyTemplate.tt', $parameters, \$output) || die $template->error();
         say STDOUT $output;
         return 0;
     } else {
         # Main template
-        $template->process($Bin . '/nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}) || die $template->error();
+        $template->process('nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}) || die $template->error();
         say STDOUT "Nginx configuration file created or modified successfully.";
 
         # Create symbolic link
@@ -132,7 +132,7 @@ sub create {
                 make_path($upstreamConfigPath) or die "Failed to create path: $upstreamConfigPath";
             }
 
-            $template->process($Bin . '/nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'}) || die $template->error();
+            $template->process('nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'}) || die $template->error();
         }
 
         return 1;
