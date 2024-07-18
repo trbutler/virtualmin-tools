@@ -7,7 +7,7 @@ use Template;
 use Getopt::Long;
 use List::Util qw(any);
 
-my ($target, $create, $delete, $test, $modification);
+my ($target, $targetAll, $create, $delete, $test, $modification);
 
 GetOptions ("target|t=s" 			=> \$target,
             "target-all|a"          => \$targetAll,
