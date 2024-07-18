@@ -21,6 +21,8 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
     $target //= $ENV{'VIRTUALSERVER_DOM'};
 }
 
+say STDERR "Target: $target; Create: $create; Delete: $delete; Test: $test";
+
 # If we don't have options set, output help description of options and exit.
 unless ($target and ($create or $delete)) {
     say STDOUT "Usage: syncNginxProxy.pl --target <target> [--create|--delete|--test]";
