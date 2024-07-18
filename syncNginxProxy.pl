@@ -9,7 +9,7 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
-my ($target, $targetAll, $create, $delete, $test, $modification);
+my ($target, $targetAll, $create, $delete, $test, $modification, @ipsInUse);
 
 GetOptions ("target|t=s" 			=> \$target,
             "target-all|a"          => \$targetAll,
@@ -87,7 +87,7 @@ sub create {
         my $parameters->{'ip'} = $parameters->{'ssl_certificate'};
         my $parameters->{'ipUnderscore'} = $parameters->{'ip'} =~ s/\./_/gr;
         my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
-        
+
         # Collect virtual domains
         my @serverNames = $vhost->cmd_config('ServerAlias');
         push (@serverNames, $vhost->cmd_config('ServerName'));
@@ -97,7 +97,6 @@ sub create {
         # SSL Parameters
         $parameters->{'ssl_certificate'} //= $vhost->cmd_config('SSLCertificateFile');
         $parameters->{'ssl_certificate_key'} //= $vhost->cmd_config('SSLCertificateKeyFile');
-
     } 
 
     # Produce template
@@ -115,8 +114,21 @@ sub create {
         say STDOUT $output;
         return 0;
     } else {
+        # Main template
         $template->process('nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}) || die $template->error();
         say STDOUT "Nginx configuration file created or modified successfully.";
+
+        # Create symbolic link
+        symlink '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}, '/etc/nginx/sites-enabled/' . $parameters->{'TargetConfig'};
+
+        # Save IP proxy config template.
+        my $upstreamConfigPath = '/var/cache/nginx/upstreamConfig/';
+        unless (-d $upstreamConfigPath) {
+            make_path($upstreamConfigPath) or die "Failed to create path: $upstreamConfigPath";
+        }
+        
+        $template->process('nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'} . '.conf') || die $template->error();
+
         return 1;
     }
 }
