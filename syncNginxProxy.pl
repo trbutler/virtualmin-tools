@@ -5,6 +5,7 @@ use warnings;
 use Apache::ConfigFile;
 use Template;
 use Getopt::Long;
+use List::Util qw(any);
 
 my ($target, $create, $delete, $test, $modification);
 
