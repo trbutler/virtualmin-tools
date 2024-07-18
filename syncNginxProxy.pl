@@ -15,6 +15,11 @@ GetOptions ("target|t=s" 			=> \$target,
             "test"                  => \$test );
 
 # Do we have settings from Virtualmin?
+use Data::Dumper;
+say STDERR Dumper(\%ENV);
+exit;
+
+
 if ($ENV{'VIRTUALSERVER_ACTION'}) {
     $delete //= (any { $_ eq $ENV{'VIRTUALSERVER_ACTION'} } [ 'DELETE_DOMAIN', 'DISABLE_DOMAIN' ]) ? 1 : 0;
     $create //= (any { $_ eq $ENV{'VIRTUALSERVER_ACTION'} } [ 'CREATE_DOMAIN', 'MODIFY_DOMAIN', 'CLONE_DOMAIN', 'ENABLE_DOMAIN' ]) ? 1 : 0;
