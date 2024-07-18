@@ -21,6 +21,16 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
     $target //= $ENV{'VIRTUALSERVER_DOM'};
 }
 
+# If we don't have options set, output help description of options and exit.
+unless ($target and ($create || $delete) || $test) {
+    say STDOUT "Usage: syncNginxProxy.pl --target <target> [--create|--delete|--test]";
+    say STDOUT "  --target <target>  The target configuration file to create or delete.";
+    say STDOUT "  --create           Create or modify the target configuration file.";
+    say STDOUT "  --delete           Delete the target configuration file.";
+    say STDOUT "  --test             Test the target configuration file.";
+    exit;
+}
+
 # Require a target.
 die "No target specified" unless $target;
 
