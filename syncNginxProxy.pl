@@ -123,7 +123,7 @@ sub create {
         symlink '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}, '/etc/nginx/sites-enabled/' . $parameters->{'TargetConfig'};
 
         # Save IP proxy config template.
-        unless $ipsInUse->{ $parameters->{'ip'} } {
+        unless ($ipsInUse->{ $parameters->{'ip'} }) {
             $ipsInUse->{ $parameters->{'ip'} } = 1;
         
             # does the proxy upstream config directory exist?
