@@ -90,8 +90,8 @@ sub create {
         $parameters->{'root'} = $vhost->cmd_config('DocumentRoot');
 
         # SSL Parameters
-        $parameters->{'ssl_certificate'} = $vhost->cmd_config('SSLCertificateFile');
-        $parameters->{'ssl_certificate_key'} = $vhost->cmd_config('SSLCertificateKeyFile');
+        $parameters->{'ssl_certificate'} //= $vhost->cmd_config('SSLCertificateFile');
+        $parameters->{'ssl_certificate_key'} //= $vhost->cmd_config('SSLCertificateKeyFile');
 
     } 
 
