@@ -7,6 +7,7 @@ use Template;
 use Getopt::Long;
 use List::Util qw(any);
 use FindBin qw($Bin);
+use File::Path qw(make_path);
 
 my ($target, $targetAll, $create, $delete, $test, $modification);
 
@@ -101,6 +102,12 @@ sub create {
     my $template = Template->new();
     my $output;
 
+    # Make sure cache directory exists
+    my $cachePath = '/var/cache/nginx/proxy/' . $parameters->{'TargetConfig'};
+    unless (-d $cachePath) {
+        make_path($cachePath) or die "Failed to create path: $cachePath";
+    }
+    
     if ($test) {
         $template->process('nginxProxyTemplate.tt', $parameters, \$output) || die $template->error();
         say STDOUT $output;
