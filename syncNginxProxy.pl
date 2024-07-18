@@ -43,7 +43,6 @@ if ($create) {
     # Open the Apache configuration file for reading
     my $parameters = {};
     $parameters->{'TargetConfig'} = $target;
-    $parameters->{'action'} = $action // 'create';
 
     $VIRTUALSERVER_DOM;
 
