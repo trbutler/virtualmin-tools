@@ -85,9 +85,8 @@ sub create {
     my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $parameters->{'TargetConfig'} . '.conf');
 
     for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
-        my $parameters->{'ip'} = $vh;
-        say STDERR "IP: " . $parameters->{'ip'};
-        my $parameters->{'ipUnderscore'} = $parameters->{'ip'} =~ s/\./_/gr;
+        $parameters->{'ip'} //= $vh =~ s/:[0-9]+$//r;
+        $parameters->{'ipUnderscore'} //= $parameters->{'ip'} =~ s/\./_/gr;
         my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
 
         # Collect virtual domains
