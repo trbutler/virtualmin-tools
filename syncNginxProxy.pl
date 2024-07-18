@@ -22,7 +22,7 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
 }
 
 # If we don't have options set, output help description of options and exit.
-unless ($target and ($create || $delete) || $test) {
+unless ($target and ($create or $delete)) {
     say STDOUT "Usage: syncNginxProxy.pl --target <target> [--create|--delete|--test]";
     say STDOUT "  --target <target>  The target configuration file to create or delete.";
     say STDOUT "  --create           Create or modify the target configuration file.";
