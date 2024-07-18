@@ -6,6 +6,7 @@ use Apache::ConfigFile;
 use Template;
 use Getopt::Long;
 use List::Util qw(any);
+use FindBin qw($Bin);
 
 my ($target, $targetAll, $create, $delete, $test, $modification);
 
@@ -76,6 +77,7 @@ sub create {
     # Open the Apache configuration file for reading
     my $parameters = {};
     $parameters->{'TargetConfig'} = $target;
+    $parameters->{'programPath'} = $Bin;
 
     # Use the Apache::ConfigFile module to parse the Apache configuration file
     my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $parameters->{'TargetConfig'} . '.conf');
