@@ -90,7 +90,8 @@ sub create {
         my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
 
         # Collect virtual domains
-        my @serverNames = $vhost->cmd_config_array('ServerAlias');
+        my @serverNamesArray = $vhost->cmd_config_array('ServerAlias');
+        my @serverNames = map { $_->[0] } @serverNamesArray;
         push (@serverNames, $vhost->cmd_config('ServerName'));
         $parameters->{'server_name'} = join(' ', @serverNames);
         $parameters->{'root'} = $vhost->cmd_config('DocumentRoot');
