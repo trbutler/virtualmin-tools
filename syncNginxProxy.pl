@@ -16,8 +16,8 @@ GetOptions ("target|t=s" 			=> \$target,
 
 # Do we have settings from Virtualmin?
 if ($ENV{'VIRTUALSERVER_ACTION'}) {
-    $delete //= (any { $_ eq $ENV{'VIRTUALSERVER_ACTION'} } [ 'DELETE_DOMAIN', 'DISABLE_DOMAIN' ]) ? 1 : 0;
-    $create //= (any { $_ eq $ENV{'VIRTUALSERVER_ACTION'} } [ 'CREATE_DOMAIN', 'MODIFY_DOMAIN', 'CLONE_DOMAIN', 'ENABLE_DOMAIN' ]) ? 1 : 0;
+    $delete //= (any { $_ eq $ENV{'VIRTUALSERVER_ACTION'} } qw ( 'DELETE_DOMAIN', 'DISABLE_DOMAIN' )) ? 1 : 0;
+    $create //= (any { $_ eq $ENV{'VIRTUALSERVER_ACTION'} } qw ( 'CREATE_DOMAIN', 'MODIFY_DOMAIN', 'CLONE_DOMAIN', 'ENABLE_DOMAIN' )) ? 1 : 0;
 
     $target //= $ENV{'VIRTUALSERVER_DOM'};
 }
