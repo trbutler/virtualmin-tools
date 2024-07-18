@@ -35,7 +35,7 @@ unless ($target and ($create or $delete)) {
 die "No target specified" unless $target;
 
 # See if file exists.
-unless (-e '/etc/apache2/sites-available/' . $target) {
+unless (-e '/etc/apache2/sites-available/' . $target . '.conf') {
     die "Configuration file doesn't exist.";
 }
 
@@ -43,7 +43,7 @@ if ($create) {
     # Open the Apache configuration file for reading
     my $parameters = {};
     $parameters->{'TargetConfig'} = $target;
-    
+
     # Use the Apache::ConfigFile module to parse the Apache configuration file
     my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $parameters->{'TargetConfig'} . '.conf');
 
