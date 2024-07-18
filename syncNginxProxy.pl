@@ -112,12 +112,12 @@ sub create {
     }
 
     if ($test) {
-        $template->process('nginxProxyTemplate.tt', $parameters, \$output) || die $template->error();
+        $template->process($Bin . '/nginxProxyTemplate.tt', $parameters, \$output) || die $template->error();
         say STDOUT $output;
         return 0;
     } else {
         # Main template
-        $template->process('nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}) || die $template->error();
+        $template->process($Bin . '/nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}) || die $template->error();
         say STDOUT "Nginx configuration file created or modified successfully.";
 
         # Create symbolic link
@@ -133,7 +133,7 @@ sub create {
                 make_path($upstreamConfigPath) or die "Failed to create path: $upstreamConfigPath";
             }
 
-            $template->process('nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'}) || die $template->error();
+            $template->process($Bin . '/nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'}) || die $template->error();
         }
 
         return 1;
