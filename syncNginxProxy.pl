@@ -91,6 +91,9 @@ sub create {
 
         # Collect virtual domains
         my @serverNames = $vhost->cmd_config('ServerAlias');
+        use Data::Dumper;
+        print Dumper(@serverNames); exit;
+        
         push (@serverNames, $vhost->cmd_config('ServerName'));
         $parameters->{'server_name'} = join(' ', @serverNames);
         $parameters->{'root'} = $vhost->cmd_config('DocumentRoot');
