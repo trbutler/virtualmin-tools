@@ -86,6 +86,7 @@ sub create {
 
     for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
         my $parameters->{'ip'} = $vh;
+        say STDERR "IP: " . $parameters->{'ip'};
         my $parameters->{'ipUnderscore'} = $parameters->{'ip'} =~ s/\./_/gr;
         my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
 
