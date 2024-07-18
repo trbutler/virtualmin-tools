@@ -85,7 +85,7 @@ sub create {
     my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $parameters->{'TargetConfig'} . '.conf');
 
     for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
-        my $parameters->{'ip'} = $parameters->{'ssl_certificate'};
+        my $parameters->{'ip'} = $vh;
         my $parameters->{'ipUnderscore'} = $parameters->{'ip'} =~ s/\./_/gr;
         my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
 
@@ -128,7 +128,7 @@ sub create {
             make_path($upstreamConfigPath) or die "Failed to create path: $upstreamConfigPath";
         }
     
-        $template->process('nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'} . '.conf') || die $template->error();
+        $template->process('nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'}) || die $template->error();
 
         return 1;
     }
