@@ -7,6 +7,7 @@ use Template;
 use Getopt::Long;
 use List::Util qw(any);
 use FindBin qw($Bin);
+use File::Path qw(make_path);
 
 my ($target, $targetAll, $create, $delete, $test, $modification);
 
@@ -83,6 +84,8 @@ sub create {
     my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $parameters->{'TargetConfig'} . '.conf');
 
     for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
+        my $parameters->{'ip'} = $parameters->{'ssl_certificate'};
+        my $parameters->{'ipUnderscore'} = $parameters->{'ip'} =~ s/\./_/gr;
         my $vhost = $apacheConfig->cmd_context('VirtualHost' => $vh);
         
         # Collect virtual domains
@@ -100,6 +103,12 @@ sub create {
     # Produce template
     my $template = Template->new();
     my $output;
+
+    # Make sure cache directory exists
+    my $cachePath = '/var/cache/nginx/proxy/' . $parameters->{'TargetConfig'};
+    unless (-d $cachePath) {
+        make_path($cachePath) or die "Failed to create path: $cachePath";
+    }
 
     if ($test) {
         $template->process('nginxProxyTemplate.tt', $parameters, \$output) || die $template->error();

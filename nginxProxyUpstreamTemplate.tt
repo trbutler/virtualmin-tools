@@ -1,0 +1,13 @@
+upstream apache_backend_https_[% ipUnderscore %] {                                                                                                                                                              
+    server [% ipAddress %]:444;                                                                                                                                                                                                                                                                             
+    keepalive 32;                                                                                                                                                                                          
+    keepalive_timeout 15;
+    keepalive_requests 100;
+}
+
+upstream apache_backend_http_[% ipUnderscore %] {
+    server [% ipAddress %]:81; 
+    keepalive 32;
+    keepalive_timeout 15; 
+    keepalive_requests 100;     
+}
