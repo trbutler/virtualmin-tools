@@ -10,7 +10,7 @@ use FindBin qw($Bin);
 use File::Path qw(make_path);
 use File::Path qw(make_path);
 
-my ($target, $targetAll, $create, $delete, $test, $modification, @ipsInUse);
+my ($target, $targetAll, $create, $delete, $test, $modification, $ipsInUse);
 
 GetOptions ("target|t=s" 			=> \$target,
             "target-all|a"          => \$targetAll,
