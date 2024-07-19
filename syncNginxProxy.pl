@@ -23,7 +23,7 @@ if ($targetAll) {
     opendir(DIR, '/etc/apache2/sites-enabled/') or die $!;
     while (my $file = readdir(DIR)) {
         next if ($file eq '.' or $file eq '..');
-        $target = $file;
+        $target = $file =~ s/\.conf$//r;
         &create($target);
     }
     closedir(DIR);
