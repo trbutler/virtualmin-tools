@@ -20,7 +20,7 @@ GetOptions ("target|t=s" 			=> \$target,
 
 # Synchronize all NGINX configuration files by running create subroutine over and over.
 if ($targetAll) {
-    opendir(DIR, '/etc/apache2/sites-available/') or die $!;
+    opendir(DIR, '/etc/apache2/sites-enabled/') or die $!;
     while (my $file = readdir(DIR)) {
         next if ($file eq '.' or $file eq '..');
         $target = $file;
@@ -124,11 +124,11 @@ sub create {
         return 0;
     } else {
         # Main template
-        $template->process('nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}) || die $template->error();
+        $template->process('nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}) . '.conf' || die $template->error();
         say STDOUT "Nginx configuration file created or modified successfully.";
 
         # Create symbolic link
-        symlink '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}, '/etc/nginx/sites-enabled/' . $parameters->{'TargetConfig'};
+        symlink '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'} . '.conf', '/etc/nginx/sites-enabled/' . $parameters->{'TargetConfig'} . '.conf';
 
         # Save IP proxy config template.
         unless ($ipsInUse->{ $parameters->{'ip'} }) {
