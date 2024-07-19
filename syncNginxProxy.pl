@@ -65,6 +65,10 @@ elsif ($delete) {
 
 # See if we need to restart NGINX
 if ($modification) {
+    # Clear Proxy Cache
+    my $deleteResult = system('rm -rf /var/cache/nginx/proxy/' . $target . '/');
+
+    # Restart NGINX
     my $result = system('service nginx restart');
 
     if ($result == 0) {
