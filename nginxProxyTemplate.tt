@@ -37,15 +37,14 @@ server {
     ssl_certificate [% ssl_certificate %];
     ssl_certificate_key [% ssl_certificate_key %];
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-    [% ELSE %]
-    listen 80;
-    [% END %]
-
 
     # Add these settings for better HTTP/2 support
     ssl_stapling on;
     ssl_stapling_verify on;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    [% ELSE %]
+    listen 80;
+    [% END %]
 
     include [% programPath %]/includes/basicProxy.conf;
     include [% TargetConfig %]/*;
