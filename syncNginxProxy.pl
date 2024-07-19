@@ -87,7 +87,7 @@ sub create {
     $parameters->{'programPath'} = $Bin;
 
     # Use the Apache::ConfigFile module to parse the Apache configuration file
-    my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-available/' . $parameters->{'TargetConfig'} . '.conf');
+    my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-enabled/' . $parameters->{'TargetConfig'} . '.conf');
 
     for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
         $parameters->{'ip'} //= $vh =~ s/:[0-9]+$//r;
