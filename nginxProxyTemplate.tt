@@ -5,6 +5,16 @@ server {
     root [% root %];
     index index.html index.htm;
 
+    # Redirect for admin
+    if ($host = admin.[% TargetConfig %]) {
+        return 301 https://[% TargetConfig %]:10000$request_uri;
+    }
+
+    # Redirect for webmail
+    if ($host = webmail.[% TargetConfig %]) {
+        return 301 https://[% TargetConfig %]:20000$request_uri;
+    }
+
     location / {
         proxy_cache [% TargetConfig %];
         proxy_no_cache 0;
@@ -52,6 +62,16 @@ server {
 
 [% IF ssl_certificate %]
 server {
+    # Redirect for admin
+    if ($host = admin.[% TargetConfig %]) {
+        return 301 https://[% TargetConfig %]:10000$request_uri;
+    }
+
+    # Redirect for webmail
+    if ($host = webmail.[% TargetConfig %]) {
+        return 301 https://[% TargetConfig %]:20000$request_uri;
+    }
+
     # Force SSL.
     return 301 https://$host$request_uri;
     listen 80;
