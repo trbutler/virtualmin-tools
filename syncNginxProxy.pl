@@ -116,7 +116,7 @@ sub create {
     my $cachePath = '/var/cache/nginx/proxy/' . $parameters->{'TargetConfig'};
     unless (-d $cachePath) {
         make_path($cachePath) or die "Failed to create path: $cachePath";
-    }
+    } 
 
     if ($test) {
         $template->process('nginxProxyTemplate.tt', $parameters, \$output) || die $template->error();
