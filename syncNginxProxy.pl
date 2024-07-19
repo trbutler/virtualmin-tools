@@ -9,12 +9,13 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
-my ($target, $targetAll, $create, $delete, $test, $modification, $ipsInUse);
+my ($target, $targetAll, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
 
 GetOptions ("target|t=s" 			=> \$target,
             "target-all|a"          => \$targetAll,
 			"create|modify|c|m"     => \$create,
             "delete|d"              => \$delete,
+            "no-ssl|u"              => \$noSSL,           
             "test"                  => \$test );
 
 # Synchronize all NGINX configuration files by running create subroutine over and over.
@@ -42,6 +43,7 @@ unless ($target and ($create or $delete)) {
     say STDOUT "  --target  -t <target>  The target configuration file to create or delete.";
     say STDOUT "  --create  -c           Create or modify the target configuration file.";
     say STDOUT "  --delete  -d           Delete the target configuration file.";
+    say STDOUT "  --no-ssl  -u           Disable SSL on host even if certificate exists.";
     say STDOUT "  --test                 Test the target configuration file.";
     exit;
 }
@@ -96,8 +98,10 @@ sub create {
         $parameters->{'root'} = $vhost->cmd_config('DocumentRoot');
 
         # SSL Parameters
-        $parameters->{'ssl_certificate'} //= $vhost->cmd_config('SSLCertificateFile');
-        $parameters->{'ssl_certificate_key'} //= $vhost->cmd_config('SSLCertificateKeyFile');
+        unless ($noSSL) {
+            $parameters->{'ssl_certificate'} //= $vhost->cmd_config('SSLCertificateFile');
+            $parameters->{'ssl_certificate_key'} //= $vhost->cmd_config('SSLCertificateKeyFile');
+        }
     } 
 
     # Produce template
