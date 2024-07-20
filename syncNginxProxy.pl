@@ -28,8 +28,8 @@ if ($rebuild) {
     foreach (@{ $directoryTargets }) {
         opendir(DIR, $_) or die $!;
         while (my $file = readdir(DIR)) {
-            next if ($file eq '.' or $file eq '..');
-            unlink $_ . $file;
+            $target = $file =~ s/\.conf$//r;
+            &delete($target);
         }
         closedir(DIR);
     }
@@ -149,39 +149,4 @@ sub create {
         say STDOUT "Nginx configuration file created or modified successfully.";
 
         # Create symbolic link
-        symlink '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'} . '.conf', '/etc/nginx/sites-enabled/' . $parameters->{'TargetConfig'} . '.conf';
-
-        # Save IP proxy config template.
-        unless ($ipsInUse->{ $parameters->{'ip'} }) {
-            $ipsInUse->{ $parameters->{'ip'} } = 1;
-        
-            # does the proxy upstream config directory exist?
-            my $upstreamConfigPath = '/etc/nginx/upstreamConfig/';
-            unless (-d $upstreamConfigPath) {
-                make_path($upstreamConfigPath) or die "Failed to create path: $upstreamConfigPath";
-            }
-
-            $template->process('nginxProxyUpstreamTemplate.tt', $parameters, $upstreamConfigPath . $parameters->{'ipUnderscore'}) || die $template->error();
-        }
-
-        return 1;
-    }
-}
-
-sub delete {
-    my $target = shift;
-
-    if (!-e '/etc/nginx/sites-available/' . $target) {
-        say STDOUT "Nginx configuration file doesn't exist.";
-        return 0;
-    }
-    elsif ($test) {
-        say STDOUT "Nginx configuration file would be deleted successfully.";
-        return 0;
-    }
-    else {
-        unlink '/etc/nginx/sites-available/' . $target;
-        say STDOUT "Nginx configuration file deleted successfully.";
-        return 0;
-    }
-}
+        symlink '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'} . '.conf
