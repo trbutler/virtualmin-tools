@@ -150,17 +150,4 @@ sub create {
 sub delete {
     my $target = shift;
 
-    if (!-e '/etc/nginx/sites-available/' . $target) {
-        say STDOUT "Nginx configuration file doesn't exist.";
-        return 0;
-    }
-    elsif ($test) {
-        say STDOUT "Nginx configuration file would be deleted successfully.";
-        return 0;
-    }
-    else {
-        unlink '/etc/nginx/sites-available/' . $target;
-        say STDOUT "Nginx configuration file deleted successfully.";
-        return 0;
-    }
-}
+    if (!-e '/etc/nginx/sites-available/' . $target) 
