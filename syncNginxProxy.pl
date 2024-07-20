@@ -146,7 +146,7 @@ sub create {
         return 0;
     } else {
         # Main template
-        $template->process('nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'}) . '.conf' || die $template->error();
+        $template->process('nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'} . '.conf') || die $template->error();
         say STDOUT "Nginx configuration file created or modified successfully.";
 
         # Create symbolic link
