@@ -184,8 +184,8 @@ sub delete {
         unlink '/etc/nginx/sites-available/' . $target . '.conf';
 
         # Delete symbolic link, too.
-        if (-e '/etc/nginx/sites-enabled/' . $target '.conf') {
-            unlink '/etc/nginx/sites-enabled/' . $target '.conf';
+        if (-e '/etc/nginx/sites-enabled/' . $target . '.conf') {
+            unlink '/etc/nginx/sites-enabled/' . $target . '.conf';
         }
 
         say STDOUT "Nginx configuration file deleted successfully.";
