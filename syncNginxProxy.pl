@@ -9,14 +9,33 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
-my ($target, $targetAll, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
+my ($target, $targetAll, $rebuild, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
 
 GetOptions ("target|t=s" 			=> \$target,
             "target-all|a"          => \$targetAll,
+            "rebuild|r"             => \$rebuild,
 			"create|modify|c|m"     => \$create,
             "delete|d"              => \$delete,
             "no-ssl|u"              => \$noSSL,           
             "test"                  => \$test );
+
+# Rebuild all NGINX configuration files by removing all existing NGINX configuration files.
+if ($rebuild) {
+    my $directoryTargets = [ '/etc/nginx/sites-enabled/', '/etc/nginx/sites-available/' ];
+
+    say STDOUT "Removing existing NGINX configuration files.";
+    
+    foreach (@{ $directoryTargets }) {
+        opendir(DIR, $_) or die $!;
+        while (my $file = readdir(DIR)) {
+            next if ($file eq '.' or $file eq '..');
+            unlink $_ . $file;
+        }
+        closedir(DIR);
+    }
+
+    $targetAll = 1;
+}
 
 # Synchronize all NGINX configuration files by running create subroutine over and over.
 if ($targetAll) {
@@ -41,6 +60,8 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
 unless ($target and ($create or $delete)) {
     say STDOUT "Usage: syncNginxProxy.pl --target <target> [--create|--delete|--test]";
     say STDOUT "  --target  -t <target>  The target configuration file to create or delete.";
+    say STDOUT "  --target-all -a        Create an NGINX configuration file for all Apache configuration files.";
+    say STDOUT "  --rebuild  -r          Remove existing NGINX site configurations and then run target all.";
     say STDOUT "  --create  -c           Create or modify the target configuration file.";
     say STDOUT "  --delete  -d           Delete the target configuration file.";
     say STDOUT "  --no-ssl  -u           Disable SSL on host even if certificate exists.";
