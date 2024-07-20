@@ -35,6 +35,7 @@ if ($rebuild) {
     }
 
     $targetAll = 1;
+    $create = 1;
 }
 
 # Synchronize all NGINX configuration files by running create subroutine over and over.
