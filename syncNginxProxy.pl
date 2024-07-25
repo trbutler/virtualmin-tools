@@ -79,7 +79,12 @@ unless (-e '/etc/apache2/sites-available/' . $target . '.conf') {
     # Do we have a parent target?
     if ($parentTarget) {
         $target = $parentTarget;
-        die 'Configuration files for ' . $target . ' and ' . $parentTarget . " don't exist.";
+        if (-e '/etc/apache2/sites-available/' . $target . '.conf') {
+            say STDOUT "Using parent server as target: " . $target;
+        }
+        else {
+            die 'Configuration files for ' . $target . ' and ' . $parentTarget . " don't exist.";
+        }
     } 
     else {
         die 'Configuration file for ' . $target . " doesn't exist.";
