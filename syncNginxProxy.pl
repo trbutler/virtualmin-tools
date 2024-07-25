@@ -9,7 +9,7 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
-my ($target, $targetAll, $rebuild, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
+my ($target, $parentTarget, $targetAll, $rebuild, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
 
 GetOptions ("target|t=s" 			=> \$target,
             "target-all|a"          => \$targetAll,
@@ -55,6 +55,7 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
     $delete //= (any { $_ eq $ENV{'VIRTUALSERVER_ACTION'} } qw(DELETE_DOMAIN DISABLE_DOMAIN)) ? 1 : 0;
     $create //= (any { $_ eq $ENV{'VIRTUALSERVER_ACTION'} } qw(CREATE_DOMAIN MODIFY_DOMAIN CLONE_DOMAIN ENABLE_DOMAIN SSL_DOMAIN)) ? 1 : 0;
     $target //= $ENV{'VIRTUALSERVER_DOM'};
+    $parentTarget //= $ENV{'PARENT_DOMAIN_DOM'};
 }
 
 # If we don't have options set, output help description of options and exit.
@@ -75,7 +76,14 @@ die "No target specified" unless $target;
 
 # See if file exists.
 unless (-e '/etc/apache2/sites-available/' . $target . '.conf') {
-    die "Configuration file doesn't exist.";
+    # Do we have a parent target?
+    if ($parentTarget) {
+        $target = $parentTarget;
+        die 'Configuration files for ' . $target . ' and ' . $parentTarget . " don't exist.";
+    } 
+    else {
+        die 'Configuration file for ' . $target . " doesn't exist.";
+    }
 }
 
 if ($create) {
