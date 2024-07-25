@@ -9,11 +9,12 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
-my ($target, $parentTarget, $targetAll, $rebuild, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
+my ($target, $parentTarget, $targetAll, $rebuild, $clearCache, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
 
 GetOptions ("target|t=s" 			=> \$target,
             "target-all|a"          => \$targetAll,
             "rebuild|r"             => \$rebuild,
+            "clearcache|x"          => \$clearCache,
 			"create|modify|c|m"     => \$create,
             "delete|d"              => \$delete,
             "no-ssl|u"              => \$noSSL,           
@@ -36,6 +37,12 @@ if ($rebuild) {
 
     $targetAll = 1;
     $create = 1;
+}
+
+if ($clearCache) {
+    say STDOUT "Clearing NGINX proxy cache.";
+
+    &clearProxy($target);
 }
 
 # Synchronize all NGINX configuration files by running create subroutine over and over.
@@ -101,7 +108,7 @@ elsif ($delete) {
 # See if we need to restart NGINX
 if ($modification) {
     # Clear Proxy Cache
-    my $deleteResult = system('rm -rf /var/cache/nginx/proxy/' . $target . '/');
+    my $deleteResult = &clearProxy($target);
 
     # Restart NGINX
     my $result = system('service nginx restart');
@@ -204,4 +211,9 @@ sub delete {
         say STDOUT "Nginx configuration file deleted successfully.";
         return 0;
     }
+}
+
+sub clearProxy {
+    my $target = shift;
+    return system('rm -rf /var/cache/nginx/proxy/' . $target . '/');
 }
