@@ -6,13 +6,13 @@ This tool is designed to be run every time Virtualmin modifies or creates a serv
 
 The script accepts the following command-line options for direct operation:
 
-    - `--target <target>` or `-t <target>`: Specifies the target configuration file to create or delete.
-    - `--target-all` or `-a`: Creates an NGINX configuration file for all Apache configuration files.
-    - `--rebuild` or `-r`: Removes existing NGINX site configurations and then runs the equivalent of `--target-all`.
-    - `--create` or `-c`: Creates or modifies the target configuration file.
-    - `--delete` or `-d`: Deletes the target configuration file.
-    - `--no-ssl` or `-u`: Disables SSL on the host even if a certificate exists.
-    - `--test`: Tests the target configuration file.
+- `--target <target>` or `-t <target>`: Specifies the target configuration file to create or delete.
+- `--target-all` or `-a`: Creates an NGINX configuration file for all Apache configuration files.
+- `--rebuild` or `-r`: Removes existing NGINX site configurations and then runs the equivalent of `--target-all`.
+- `--create` or `-c`: Creates or modifies the target configuration file.
+- `--delete` or `-d`: Deletes the target configuration file.
+- `--no-ssl` or `-u`: Disables SSL on the host even if a certificate exists.
+- `--test`: Tests the target configuration file.
 
 To enable automatic operation in Virtualmin upon creation or modification of a server, syncNginxProxy can be invoked from "Virtualmin Configuration" --> "Actions upon server and user configuration" --> "Command to run after making changes to a server."
 
