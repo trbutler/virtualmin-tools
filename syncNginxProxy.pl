@@ -20,6 +20,10 @@ GetOptions ("target|t=s" 			=> \$target,
             "no-ssl|u"              => \$noSSL,           
             "test"                  => \$test );
 
+# Add GPL commandline summary.
+say STDOUT "syncNginxProxy - Copyright (C) 2024 Universal Networks, LLC.";
+say STDOUT "This program comes with ABSOLUTELY NO WARRANTY. You may redistribute it under the terms of the GNU GPL v. 3.";
+
 # Rebuild all NGINX configuration files by removing all existing NGINX configuration files.
 if ($rebuild) {
     my $directoryTargets = [ '/etc/nginx/sites-enabled/', '/etc/nginx/sites-available/' ];
@@ -215,5 +219,5 @@ sub delete {
 
 sub clearProxy {
     my $target = shift;
-    return system('rm -rf /var/cache/nginx/proxy/' . $target . '/');
+    return system('rm -rf /var/cache/nginx/proxy/' . $target . '/*');
 }
