@@ -37,3 +37,11 @@ The command to enter into that box will vary depending on where you pulled this 
 - The cache key setting may need to be tweaked.
 
 - The Virtualmin webapp installer and other parts of the interface link to the ports (that should be inaccessible externally) 81 and 444, rather than the proxied ports 80 and 443.
+
+## Donations
+
+Is this tool helpful to you? It is free to use, but a donation to the non-profit I serve at, which is also the primary user that makes development of this script possible, FaithTree Christian Fellowship, Inc., is certainly appreciated. FaithTree is a 501(C)(3) organization and donations are tax deductable in the United States. You can donate here: https://faithtree.com/sa805 . Thank you!
+
+## License
+
+Copyright (C) 2004 Universal Networks, LLC. This program comes with ABSOLUTELY NO WARRANTY; for details see the file LICENSE. This is free software, and you are welcome to redistribute it under the conditions in the LICENSE file.

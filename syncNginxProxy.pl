@@ -1,4 +1,21 @@
 #!/usr/bin/perl
+# syncNginxProxy -- a tool for manual or Virtualmin automated 
+#      NGINX proxy configuration synchronization with Apache.
+#
+# Copyright (C) 2024 Universal Networks, LLC.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use strict;
 use warnings;
@@ -21,8 +38,8 @@ GetOptions ("target|t=s" 			=> \$target,
             "test"                  => \$test );
 
 # Add GPL commandline summary.
-say STDOUT "syncNginxProxy - Copyright (C) 2024 Universal Networks, LLC.";
-say STDOUT "This program comes with ABSOLUTELY NO WARRANTY. You may redistribute it under the terms of the GNU GPL v. 3.";
+say STDOUT "syncNginxProxy - Copyright (C) 2024 Universal Networks, LLC. <https://uninetsolutions.com>";
+say STDOUT "This program comes with ABSOLUTELY NO WARRANTY. You may redistribute it under the terms of the GNU GPL v. 3.\n";
 
 # Rebuild all NGINX configuration files by removing all existing NGINX configuration files.
 if ($rebuild) {
