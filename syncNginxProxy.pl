@@ -26,12 +26,14 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
-my ($target, $parentTarget, $targetAll, $rebuild, $clearCache, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
+my ($enableProxy, $disableProxy, $target, $parentTarget, $targetAll, $rebuild, $clearCache, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
 
-GetOptions ("target|t=s" 			=> \$target,
+GetOptions ("enable-proxy" 			=> \$enableProxy,
+            "disable-proxy" 		=> \$disableProxy,
+            "target|t=s" 			=> \$target,
             "target-all|a"          => \$targetAll,
             "rebuild|r"             => \$rebuild,
-            "clearcache|x"          => \$clearCache,
+            "clear-cache|x"          => \$clearCache,
 			"create|modify|c|m"     => \$create,
             "delete|d"              => \$delete,
             "no-ssl|u"              => \$noSSL,           
@@ -40,6 +42,13 @@ GetOptions ("target|t=s" 			=> \$target,
 # Add GPL commandline summary.
 say STDOUT "syncNginxProxy - Copyright (C) 2024 Universal Networks, LLC. <https://uninetsolutions.com>";
 say STDOUT "This program comes with ABSOLUTELY NO WARRANTY. You may redistribute it under the terms of the GNU GPL v. 3.\n";
+
+# Enable or disable proxy.
+my $proxyControlMode = ($enableProxy) ? 'enable' : ($disableProxy) ? 'disable' : '';
+if ($proxyControlMode) {
+    &proxyControl($proxyControlMode);
+    exit;
+}
 
 # Rebuild all NGINX configuration files by removing all existing NGINX configuration files.
 if ($rebuild) {
@@ -62,8 +71,8 @@ if ($rebuild) {
 
 if ($clearCache) {
     say STDOUT "Clearing NGINX proxy cache.";
-
     &clearProxy($target);
+    exit;
 }
 
 # Synchronize all NGINX configuration files by running create subroutine over and over.
@@ -87,8 +96,8 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
 }
 
 # If we don't have options set, output help description of options and exit.
-unless ($target and ($create or $delete)) {
-    say STDOUT "Usage: syncNginxProxy.pl --target <target> [--create|--delete|--test]";
+unless ($target and ($create or $delete or $test)) {
+    say STDOUT "Usage: syncNginxProxy.pl --target <target> [--create|--delete|--test|--clear-cache|]";
     say STDOUT "  --target  -t <target>  The target configuration file to create or delete.";
     say STDOUT "  --target-all -a        Create an NGINX configuration file for all Apache configuration files.";
     say STDOUT "  --rebuild  -r          Remove existing NGINX site configurations and then run target all.";
@@ -96,6 +105,7 @@ unless ($target and ($create or $delete)) {
     say STDOUT "  --delete  -d           Delete the target configuration file.";
     say STDOUT "  --no-ssl  -u           Disable SSL on host even if certificate exists.";
     say STDOUT "  --test                 Test the target configuration file.";
+    say STDOUT "  --clear-cache -x        Clear the NGINX proxy cache for the target.";
     exit;
 }
 
@@ -237,4 +247,26 @@ sub delete {
 sub clearProxy {
     my $target = shift;
     return system('rm -rf /var/cache/nginx/proxy/' . $target . '/*');
+}
+
+sub proxyControl {
+    my $state = shift;
+    my $presentState = ($state eq 'enable') ? 'disable' : 'enable';
+    my $ports = { 'enable' => 81, 'disable' => 80 };
+    my $SSLports = { 'enable' => 444, 'disable' => 443 };
+ 
+    # Open the Apache listen configuration file for reading
+    my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/ports.conf');
+
+    # Get all Listen directives
+    my @listen_directives = $config->cmd("Listen");
+
+    # Print all Listen directives
+    foreach my $directive (@listen_directives) {
+        print "Listen directive: $directive\n";
+    }
+    exit;
+
+    # Replace 80 with 81, 443 with 444 in the file
+
 }
