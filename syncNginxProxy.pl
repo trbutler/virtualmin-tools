@@ -271,7 +271,7 @@ sub proxyControl {
     }
 
     # If we find both port sets enabled, at least in part, we can't proceed automatically.
-    if ($currentlyEnabled and $currentlyDisabled) or (! $currentlyEnabled and ! $currentlyDisabled) {
+    if (($currentlyEnabled and $currentlyDisabled) or (! $currentlyEnabled and ! $currentlyDisabled)) {
         say STDOUT "A mix of proxy port modes are currently enabled. Unable to proceed with automatic proxy configuration.";
         exit;
     }
