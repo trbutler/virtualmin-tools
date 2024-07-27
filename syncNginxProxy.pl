@@ -266,6 +266,7 @@ sub proxyControl {
     my $currentlyEnabled = 0;
     my $currentlyDisabled = 0;   
     foreach my $directive (@listen_directives) {
+        say STDOUT 'Directive: ' . $directive->[0];
         $currentlyEnabled = 1 if ($directive->[0] =~ /(?:\:| )(?:81|444)/);
         $currentlyDisabled = 1 if ($directive->[0] =~ /(?:\:| )(?:80|443)/);
     }
