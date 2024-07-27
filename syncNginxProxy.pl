@@ -85,15 +85,17 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
 # If we don't have options set, output help description of options and exit.
 unless ($target and ($create or $delete or $test)) {
     say STDOUT "Usage: syncNginxProxy.pl --target <target> [--create|--delete|--test|--clear-cache|]";
+    say STDOUT "\nOperational Modes (requires --target):";
     say STDOUT "  --target  -t <target>  The target configuration file to create or delete.";
-    say STDOUT "  --target-all -a        Create an NGINX configuration file for all Apache configuration files.";
-    say STDOUT "  --rebuild  -r          Remove existing NGINX site configurations and then run target all.";
     say STDOUT "  --create  -c           Create or modify the target configuration file.";
     say STDOUT "  --delete  -d           Delete the target configuration file.";
     say STDOUT "  --no-ssl  -u           Disable SSL on host even if certificate exists.";
     say STDOUT "  --test                 Test the target configuration file.";
     say STDOUT "  --clear-cache -x        Clear the NGINX proxy cache for the target.";
-    say STDOUT "\n";
+    say STDOUT "\nBulk Operations:";
+    say STDOUT "  --target-all -a        Create an NGINX configuration file for all Apache configuration files.";
+    say STDOUT "  --rebuild  -r          Remove existing NGINX site configurations and then run target all.";
+    say STDOUT "\nProxy Control:";
     say STDOUT "  --enable-proxy         Enable NGINX proxy mode.";
     say STDOUT "  --disable-proxy        Disable NGINX proxy mode.";
     exit;
