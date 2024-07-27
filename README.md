@@ -42,6 +42,8 @@ The command to enter into that box will vary depending on where you pulled this 
 
 ## Manual Apache Configuration
 
+You should ordinarily use `syncNginxProxy.pl --enable-proxy` to accomplish the following, but if there are non-standard configuration elements hindering the automated process, here are the steps for preparing Apache for the proxy configuration:
+
 - Adjust Apache to listen on ports 81 and 444 by replacing the `Listen` directives in `/etc/apache2/ports.conf` for 80 and 443 to 81 and 444, respectively. (These ports should **not** be opened on your firewall, these are purely for NGINX to access).
 
 - In each existing virtual host configuration in `/etc/apache2/sites-available`, modify the `<VirtualHost>` directives, changing port 80 to 81 and 443 to 444.
