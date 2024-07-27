@@ -288,7 +288,7 @@ sub proxyControl {
     my $fileContent = do { local $/; <$fh> };
     $fileContent =~ s/\b($ports->{$presentState}|$SSLports->{$presentState})\b/($1 eq $ports->{$presentState}) ? $ports->{$state} : $SSLports->{$state}/ge;
 
-    print $fileContent
+    print $fileContent;
 
     # seek($fh, 0, 0);
     # print $fh $file_content;
