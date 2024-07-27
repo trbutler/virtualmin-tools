@@ -312,11 +312,14 @@ sub updatePort {
     my $fileContent = do { local $/; <$fh> };
     $fileContent =~ s/((?:Listen|<VirtualHost).*?(?:\:|\b))($ports->{$presentState}|$SSLports->{$presentState})/($2 eq $ports->{$presentState}) ? $1 . $ports->{$targetState} : $1 . $SSLports->{$targetState}/ge;
 
-    print "\n\n-----\n\n"  . $fileContent;
-
-    # seek($fh, 0, 0);
-    # print $fh $fileContent;
-    # truncate($fh, tell($fh));
-
+    if ($test) {
+        print "\n\n-----\n\n"  . $fileContent;
+    }
+    else {
+        seek($fh, 0, 0);
+        print $fh $fileContent;
+        truncate($fh, tell($fh));
+    }
+    
     close($fh);
 }
