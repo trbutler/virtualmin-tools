@@ -310,7 +310,7 @@ sub updatePort {
 
     open (my $fh, '+<', $targetFile) or die "Could not open file '$targetFile' $!";
     my $fileContent = do { local $/; <$fh> };
-    $fileContent =~ s/(?<=\:| )($ports->{$presentState}|$SSLports->{$presentState})/($1 eq $ports->{$presentState}) ? $ports->{$targetState} : $SSLports->{$targetState}/ge;
+    $fileContent =~ s/(?<=(?:Listen|<VirtualHost).*(?:\:| ))($ports->{$presentState}|$SSLports->{$presentState})/($1 eq $ports->{$presentState}) ? $ports->{$targetState} : $SSLports->{$targetState}/ge;
 
     print "\n\n-----\n\n"  . $fileContent;
 
