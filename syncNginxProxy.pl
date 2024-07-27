@@ -55,40 +55,22 @@ if ($proxyControlMode) {
     exit;
 }
 
+if ($clearCache) {
+    say STDOUT "Clearing NGINX proxy cache.";
+    &clearProxyCache($target);
+    exit;
+}
+
 # Rebuild all NGINX configuration files by removing all existing NGINX configuration files.
 if ($rebuild) {
-    my $directoryTargets = [ '/etc/nginx/sites-enabled/', '/etc/nginx/sites-available/' ];
-
-    say STDOUT "Removing existing NGINX configuration files.";
-    
-    foreach (@{ $directoryTargets }) {
-        opendir(DIR, $_) or die $!;
-        while (my $file = readdir(DIR)) {
-            $target = $file =~ s/\.conf$//r;
-            &delete($target);
-        }
-        closedir(DIR);
-    }
-
+    &deleteAll;
     $targetAll = 1;
     $create = 1;
 }
 
-if ($clearCache) {
-    say STDOUT "Clearing NGINX proxy cache.";
-    &clearProxy($target);
-    exit;
-}
-
 # Synchronize all NGINX configuration files by running create subroutine over and over.
 if ($targetAll) {
-    opendir(DIR, '/etc/apache2/sites-enabled/') or die $!;
-    while (my $file = readdir(DIR)) {
-        next if ($file eq '.' or $file eq '..');
-        $target = $file =~ s/\.conf$//r;
-        &create($target);
-    }
-    closedir(DIR);
+    &createAll;
     exit;
 }
 
@@ -244,14 +226,12 @@ sub delete {
             unlink '/etc/nginx/sites-enabled/' . $target . '.conf';
         }
 
+        # Remove cache
+        &clearProxyCache($target);
+
         say STDOUT "Nginx configuration file deleted successfully.";
         return 0;
     }
-}
-
-sub clearProxy {
-    my $target = shift;
-    return system('rm -rf /var/cache/nginx/proxy/' . $target . '/*');
 }
 
 sub proxyControl {
@@ -306,10 +286,16 @@ sub proxyControl {
     # Either disable or enable nginx
     say STDOUT "Proxy mode is being " . $targetState . 'd.';
     if ($targetState eq 'enable') {
+        # Clean out any existing NGINX configuration files and build new ones.
+        &deleteAll;
+        &createAll;
+
+        # Restart processes in proper order.
         system('systemctl restart apache2');
         system('systemctl start nginx');
         system('systemctl enable nginx');
     } else {
+        # Stop NGINX and disable it, then return Apache to normal ports.
         system('service nginx stop');
         system('systemctl disable nginx');
         system('systemctl restart apache2');
@@ -334,4 +320,36 @@ sub updatePort {
     }
 
     close($fh);
+}
+
+# Maintenance 
+sub clearProxyCache {
+    my $target = shift;
+    return system('rm -rf /var/cache/nginx/proxy/' . $target . '/*');
+}
+
+# Bulk Subroutines
+sub createAll {
+    my $directoryTargets = [ '/etc/apache2/sites-enabled/' ];
+    &bulkModify($directoryTargets, \&create);
+}
+
+sub deleteAll {
+    my $directoryTargets = [ '/etc/nginx/sites-enabled/', '/etc/nginx/sites-available/' ];
+    &bulkModify($directoryTargets, \&delete);
+}
+
+sub bulkModify {
+    my $directoryTargets = shift;
+    my $subroutine = shift;
+
+    foreach (@{ $directoryTargets }) {
+        opendir(DIR, $_) or die $!;
+        while (my $file = readdir(DIR)) {
+            next if ($file eq '.' or $file eq '..');
+            $target = $file =~ s/\.conf$//r;
+            &$subroutine($target);
+        }
+        closedir(DIR);
+    }
 }
