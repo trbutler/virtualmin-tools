@@ -312,6 +312,8 @@ sub updatePort {
     my $fileContent = do { local $/; <$fh> };
     $fileContent =~ s/(?<=\:| )($ports->{$presentState}|$SSLports->{$presentState})/($1 eq $ports->{$presentState}) ? $ports->{$targetState} : $SSLports->{$targetState}/ge;
 
+    print "\n\n-----\n\n"  . $fileContent;
+
     seek($fh, 0, 0);
     print $fh $fileContent;
     truncate($fh, tell($fh));
