@@ -319,6 +319,4 @@ sub updatePort {
     truncate($fh, tell($fh));
 
     close($fh);
-
-    exit;
 }
