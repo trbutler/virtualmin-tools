@@ -26,6 +26,11 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
+$apachePath = {
+    'sitesAvailable' => '/etc/apache2/sites-available/',
+    'sitesEnabled' => '/etc/apache2/sites-enabled/'
+};
+
 my ($enableProxy, $disableProxy, $target, $parentTarget, $targetAll, $rebuild, $clearCache, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
 
 GetOptions ("enable-proxy" 			=> \$enableProxy,
@@ -282,9 +287,9 @@ sub proxyControl {
         say STDOUT 'Proxy mode is already ' . $targetState . 'd.';
         exit;
     }
-    
+
     # Create array list of all sites-available from Apache
-    opendir(DIR, '/etc/apache2/sites-available/') or die $!;
+    opendir(DIR, $apachePath->{'sitesAvailable'}) or die $!;
     my @configurationFilesToUpdate = grep { !/^\./ } readdir(DIR);
     closedir(DIR);
 
@@ -292,6 +297,10 @@ sub proxyControl {
 
     # Modify files.
     foreach my $file (@configurationFilesToUpdate) {
+        # Add path if not present.
+        $file = $apachePath->{'sitesAvailable'} . $file unless ($file =~ /\//);
+
+        #make Update.
         &updatePort($file, $presentState, $targetState, $ports, $SSLports);
     }
 }
