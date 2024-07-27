@@ -26,7 +26,7 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
-$apachePath = {
+my $apachePath = {
     'sitesAvailable' => '/etc/apache2/sites-available/',
     'sitesEnabled' => '/etc/apache2/sites-enabled/'
 };
