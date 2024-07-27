@@ -93,6 +93,9 @@ unless ($target and ($create or $delete or $test)) {
     say STDOUT "  --no-ssl  -u           Disable SSL on host even if certificate exists.";
     say STDOUT "  --test                 Test the target configuration file.";
     say STDOUT "  --clear-cache -x        Clear the NGINX proxy cache for the target.";
+    say STDOUT "\n";
+    say STDOUT "  --enable-proxy         Enable NGINX proxy mode.";
+    say STDOUT "  --disable-proxy        Disable NGINX proxy mode.";
     exit;
 }
 

@@ -6,7 +6,11 @@ This tool is designed to be run every time Virtualmin modifies or creates a serv
 
 The script accepts the following command-line options for direct operation:
 
-- `--enable-proxy` 
+### Setup Modes
+- `--enable-proxy`:  Enable this tool's proxying setup.
+- `--disable-proxy`: Enable this tool's proxying setup.
+
+### Operational Modes
 - `--target <target>` or `-t <target>`: Specifies the target configuration file to create or delete.
 - `--target-all` or `-a`: Creates an NGINX configuration file for all Apache configuration files.
 - `--rebuild` or `-r`: Removes existing NGINX site configurations and then runs the equivalent of `--target-all`.
