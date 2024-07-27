@@ -251,7 +251,7 @@ sub clearProxy {
 }
 
 sub proxyControl {
-    my $state = shift;
+    my $targetState = shift;
     my $ports = { 'enable' => 81, 'disable' => 80 };
     my $SSLports = { 'enable' => 444, 'disable' => 443 };
     my $targetFile = '/etc/apache2/ports.conf';
@@ -266,20 +266,20 @@ sub proxyControl {
     my $currentlyEnabled = 0;
     my $currentlyDisabled = 0;   
     foreach my $directive (@listen_directives) {
-        $currentlyEnabled = 1 if ($directive->[0] =~ /\:(?:81|444)/);
-        $currentlyDisabled = 1 if ($directive->[0] =~ /\:(?:80|443)/);
+        $currentlyEnabled = 1 if ($directive->[0] =~ /(?:\: | )(?:81|444)/);
+        $currentlyDisabled = 1 if ($directive->[0] =~ /(?:\: | )(?:80|443)/);
     }
 
     # If we find both port sets enabled, at least in part, we can't proceed automatically.
-    if ($currentlyEnabled and $currentlyDisabled) {
+    if ($currentlyEnabled and $currentlyDisabled) or (! $currentlyEnabled and ! $currentlyDisabled) {
         say STDOUT "A mix of proxy port modes are currently enabled. Unable to proceed with automatic proxy configuration.";
         exit;
     }
 
     # Does present state match requested state?
     my $presentState = ($currentlyEnabled) ? 'enable' : 'disable';   
-    if ($state eq $presentState) {
-        say STDOUT 'Proxy mode is already ' . $state . 'd.';
+    if ($targetState eq $presentState) {
+        say STDOUT 'Proxy mode is already ' . $targetState . 'd.';
         exit;
     }
 
