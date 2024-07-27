@@ -51,7 +51,7 @@ say STDOUT "This program comes with ABSOLUTELY NO WARRANTY. You may redistribute
 # Enable or disable proxy.
 my $proxyControlMode = ($enableProxy) ? 'enable' : ($disableProxy) ? 'disable' : '';
 if ($proxyControlMode) {
-    &proxyControl($proxyControlMode);
+    &proxyControl($proxyControlMode, $test);
     exit;
 }
 
@@ -83,7 +83,7 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
 }
 
 # If we don't have options set, output help description of options and exit.
-unless ($target and ($create or $delete or $test)) {
+unless ($target and ($create or $delete)) {
     say STDOUT "Usage: syncNginxProxy.pl --target <target> [--create|--delete|--test|--clear-cache|]";
     say STDOUT "\nOperational Modes (requires --target):";
     say STDOUT "  --target  -t <target>  The target configuration file to create or delete.";
@@ -91,7 +91,7 @@ unless ($target and ($create or $delete or $test)) {
     say STDOUT "  --delete  -d           Delete the target configuration file.";
     say STDOUT "  --no-ssl  -u           Disable SSL on host even if certificate exists.";
     say STDOUT "  --test                 Test the target configuration file.";
-    say STDOUT "  --clear-cache -x        Clear the NGINX proxy cache for the target.";
+    say STDOUT "  --clear-cache -x       Clear the NGINX proxy cache for the target.";
     say STDOUT "\nBulk Operations:";
     say STDOUT "  --target-all -a        Create an NGINX configuration file for all Apache configuration files.";
     say STDOUT "  --rebuild  -r          Remove existing NGINX site configurations and then run target all.";
@@ -121,6 +121,7 @@ unless (-e '/etc/apache2/sites-available/' . $target . '.conf') {
     }
 }
 
+# Core operations.
 if ($create) {
     $modification //= &create($target);
 }
@@ -240,7 +241,7 @@ sub delete {
 }
 
 sub proxyControl {
-    my $targetState = shift;
+    my ($targetState, $test) = @_;
     my $ports = { 'enable' => 81, 'disable' => 80 };
     my $SSLports = { 'enable' => 444, 'disable' => 443 };
     my $targetFile = '/etc/apache2/ports.conf';
@@ -287,6 +288,9 @@ sub proxyControl {
         #make Update.
         &updatePort($file, $presentState, $targetState, $ports, $SSLports);
     }
+
+    # Prevent restart of services, etc., if we're in test mode.
+    return 1 if ($test);
 
     # Either disable or enable nginx
     say STDOUT "Proxy mode is being " . $targetState . 'd.';
