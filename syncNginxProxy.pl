@@ -284,20 +284,31 @@ sub proxyControl {
     }
 
     # Open the Apache port configuration for adjustments. 
-    $targetFile = '/etc/apache2/sites-available/faithtree.com.conf';
+    
+    # Create array list of all sites-available from Apache
+    opendir(DIR, '/etc/apache2/sites-available/') or die $!;
+    my @configurationFilesToUpdate = grep { !/^\./ } readdir(DIR);
+    closedir(DIR);
+
+    push (@configurationFilesToUpdate, $targetFile);
+
+    foreach my $file (@configurationFilesToUpdate) {
+        &updatePort($file, $presentState, $targetState, $ports, $SSLports);
+    }
+}
+
+sub updatePort {
+    my ($targetFile, $presentState, $targetState, $ports, $SSLports) = @_;
+
     open (my $fh, '+<', $targetFile) or die "Could not open file '$targetFile' $!";
     my $fileContent = do { local $/; <$fh> };
     $fileContent =~ s/(?<=\:| )($ports->{$presentState}|$SSLports->{$presentState})/($1 eq $ports->{$presentState}) ? $ports->{$targetState} : $SSLports->{$targetState}/ge;
 
-    print $fileContent;
+    seek($fh, 0, 0);
+    print $fh $file_content;
+    truncate($fh, tell($fh));
 
-    # seek($fh, 0, 0);
-    # print $fh $file_content;
-    # truncate($fh, tell($fh));
     close($fh);
 
     exit;
-
-    # Replace 80 with 81, 443 with 444 in the file
-
 }
