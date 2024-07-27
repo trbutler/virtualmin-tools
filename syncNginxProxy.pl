@@ -33,7 +33,7 @@ GetOptions ("enable-proxy" 			=> \$enableProxy,
             "target|t=s" 			=> \$target,
             "target-all|a"          => \$targetAll,
             "rebuild|r"             => \$rebuild,
-            "clear-cache|x"          => \$clearCache,
+            "clear-cache|x"         => \$clearCache,
 			"create|modify|c|m"     => \$create,
             "delete|d"              => \$delete,
             "no-ssl|u"              => \$noSSL,           
@@ -45,6 +45,7 @@ say STDOUT "This program comes with ABSOLUTELY NO WARRANTY. You may redistribute
 
 # Enable or disable proxy.
 my $proxyControlMode = ($enableProxy) ? 'enable' : ($disableProxy) ? 'disable' : '';
+say STDERR "Proxy control mode: $proxyControlMode";
 if ($proxyControlMode) {
     &proxyControl($proxyControlMode);
     exit;
