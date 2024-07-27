@@ -284,7 +284,7 @@ sub proxyControl {
     }
 
     # Open the Apache port configuration for adjustments. 
-    open (my $fh, '+<', $file_path or die "Could not open file '$targetFile' $!";
+    open (my $fh, '+<', $targetFile or die "Could not open file '$targetFile' $!";
     my $fileContent = do { my $/; <$fh> };
     $fileContent =~ s/\b($ports->{$presentState}|$SSLports->{$presentState})\b/($1 eq $ports->{$presentState}) ? $ports->{$state} : $SSLports->{$state}/ge;
 
