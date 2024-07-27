@@ -260,7 +260,7 @@ sub proxyControl {
     my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/ports.conf');
 
     # Get all Listen directives
-    my @listen_directives = $apacheConfig->cmd("Listen");
+    my @listen_directives = $apacheConfig->cmd_config_array("Listen");
 
     # Print all Listen directives
     foreach my $directive (@listen_directives) {
