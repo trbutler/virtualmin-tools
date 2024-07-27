@@ -267,8 +267,8 @@ sub proxyControl {
     my $currentlyDisabled = 0;   
     foreach my $directive (@listen_directives) {
         say STDOUT 'Directive: ' . $directive->[0];
-        $currentlyEnabled = 1 if ($directive->[0] =~ /(?:\:| )(?:81|444)/);
-        $currentlyDisabled = 1 if ($directive->[0] =~ /(?:\:| )(?:80|443)/);
+        $currentlyEnabled = 1 if ($directive->[0] =~ /(?:\:|^)(?:81|444)/);
+        $currentlyDisabled = 1 if ($directive->[0] =~ /(?:\:|^)(?:80|443)/);
     }
 
     # If we find both port sets enabled, at least in part, we can't proceed automatically.
