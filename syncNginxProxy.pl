@@ -284,6 +284,7 @@ sub proxyControl {
     }
 
     # Open the Apache port configuration for adjustments. 
+    $targetFile = '/etc/apache2/sites-available/faithtree.com.conf';
     open (my $fh, '+<', $targetFile) or die "Could not open file '$targetFile' $!";
     my $fileContent = do { local $/; <$fh> };
     $fileContent =~ s/(?<=\:| )($ports->{$presentState}|$SSLports->{$presentState})/($1 eq $ports->{$presentState}) ? $ports->{$targetState} : $SSLports->{$targetState}/ge;
