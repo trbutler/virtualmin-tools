@@ -306,15 +306,14 @@ sub proxyControl {
     # Either disable or enable nginx
     say STDOUT "Proxy mode is being " . $targetState . 'd.';
     if ($targetState eq 'enable') {
+        system('systemctl restart apache2');
         system('systemctl start nginx');
         system('systemctl enable nginx');
     } else {
         system('service nginx stop');
         system('systemctl disable nginx');
+        system('systemctl restart apache2');
     }
-
-    # Reload Apache config
-    system('systemctl restart apache2');
 
 }
 
