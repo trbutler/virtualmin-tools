@@ -302,6 +302,20 @@ sub proxyControl {
         #make Update.
         &updatePort($file, $presentState, $targetState, $ports, $SSLports);
     }
+
+    # Either disable or enable nginx
+    say STDOUT "Proxy mode is being " . $targetState . 'd.';
+    if ($targetState eq 'enable') {
+        system('systemctl start nginx');
+        system('systemctl enable nginx');
+    } else {
+        system('service nginx stop');
+        system('systemctl disable nginx');
+    }
+
+    # Reload Apache config
+    system('systemctl restart apache2');
+
 }
 
 sub updatePort {
@@ -319,20 +333,6 @@ sub updatePort {
         print $fh $fileContent;
         truncate($fh, tell($fh));
     }
-
-    # Either disable or enable nginx
-    say STDOUT "Proxy mode is being " . $targetState . 'd.';
-    if ($targetState eq 'enable') {
-        system('systemctl start nginx');
-        system('systemctl enable nginx');
-    } else {
-        system('service nginx stop');
-        system('systemctl disable nginx');
-    }
-
-    # Reload Apache config
-    system('systemctl restart apache2');
-
 
     close($fh);
 }
