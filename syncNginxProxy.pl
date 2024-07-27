@@ -254,7 +254,7 @@ sub proxyControl {
     my $state = shift;
     my $ports = { 'enable' => 81, 'disable' => 80 };
     my $SSLports = { 'enable' => 444, 'disable' => 443 };
-    my $targetFile = '/etc/apache2/ports.conf'
+    my $targetFile = '/etc/apache2/ports.conf';
  
     # Open the Apache listen configuration file for reading
     my $apacheConfig = Apache::ConfigFile->read($targetFile);
