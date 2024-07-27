@@ -282,8 +282,6 @@ sub proxyControl {
         say STDOUT 'Proxy mode is already ' . $targetState . 'd.';
         exit;
     }
-
-    # Open the Apache port configuration for adjustments. 
     
     # Create array list of all sites-available from Apache
     opendir(DIR, '/etc/apache2/sites-available/') or die $!;
@@ -292,6 +290,7 @@ sub proxyControl {
 
     push (@configurationFilesToUpdate, $targetFile);
 
+    # Modify files.
     foreach my $file (@configurationFilesToUpdate) {
         &updatePort($file, $presentState, $targetState, $ports, $SSLports);
     }
@@ -305,7 +304,7 @@ sub updatePort {
     $fileContent =~ s/(?<=\:| )($ports->{$presentState}|$SSLports->{$presentState})/($1 eq $ports->{$presentState}) ? $ports->{$targetState} : $SSLports->{$targetState}/ge;
 
     seek($fh, 0, 0);
-    print $fh $file_content;
+    print $fh $fileContent;
     truncate($fh, tell($fh));
 
     close($fh);
