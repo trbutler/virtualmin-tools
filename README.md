@@ -36,9 +36,23 @@ The command to enter into that box will vary depending on where you pulled this 
 
     - Add `include /etc/nginx/upstreamConfig/*;` to your NGINX http block in `/etc/nginx/nginx.conf`.
 
-- Adjust Apache to list on ports 81 and 444 (these ports should **not** be opened on your firewall, these are purely for NGINX to access).
+- Run `syncNginxProxy.pl --enable-proxy` to initialize configuration, including moving Apache to private ports accessible to NGINX, but not to the public. *Note: if you are already using non-standard ports, you must complete this step manually instead, see "Manually Apache Configuration" below.*
 
 - Under Virtualmin -> Server Templates -> Default Settings -> Website for domain, modify "Port number for virtual hosts" to 81 and "Port number for SSL virtual hosts" to 444.
+
+## Manual Apache Configuration
+
+- Adjust Apache to listen on ports 81 and 444 by replacing the `Listen` directives in `/etc/apache2/ports.conf` for 80 and 443 to 81 and 444, respectively. (These ports should **not** be opened on your firewall, these are purely for NGINX to access).
+
+- In each existing virtual host configuration in `/etc/apache2/sites-available`, modify the `<VirtualHost>` directives, changing port 80 to 81 and 443 to 444.
+
+- Restart Apache using `systemctl restart apache2`.
+
+- Build the NGINX proxy configuration for all sites using `syncNginxProxy.pl -a`.
+
+- Start NGINX using `systemctl start nginx`. 
+
+- Enable NGINX for subsequent reboots by typing `systemctl enable nginx`.
 
 ## Errata 
 
