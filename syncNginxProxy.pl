@@ -252,20 +252,49 @@ sub clearProxy {
 
 sub proxyControl {
     my $state = shift;
-    my $presentState = ($state eq 'enable') ? 'disable' : 'enable';
     my $ports = { 'enable' => 81, 'disable' => 80 };
     my $SSLports = { 'enable' => 444, 'disable' => 443 };
+    my $targetFile = '/etc/apache2/ports.conf'
  
     # Open the Apache listen configuration file for reading
-    my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/ports.conf');
+    my $apacheConfig = Apache::ConfigFile->read($targetFile);
 
     # Get all Listen directives
-    my @listen_directives = $apacheConfig->cmd_config("Listen");
+    my @listen_directives = $apacheConfig->cmd_config_array("Listen");
 
-    # Print all Listen directives
+    # Test current configuration.
+    my $currentlyEnabled = 0;
+    my $currentlyDisabled = 0;   
     foreach my $directive (@listen_directives) {
-        print "Listen directive: $directive\n";
+        $currentlyEnabled = 1 if ($directive->[0] =~ /\:(?:81|444)/);
+        $currentlyDisabled = 1 if ($directive->[0] =~ /\:(?:80|443)/);
     }
+
+    # If we find both port sets enabled, at least in part, we can't proceed automatically.
+    if ($currentlyEnabled and $currentlyDisabled) {
+        say STDOUT "A mix of proxy port modes are currently enabled. Unable to proceed with automatic proxy configuration.";
+        exit;
+    }
+
+    # Does present state match requested state?
+    my $presentState = ($currentlyEnabled) ? 'enable' : 'disable';   
+    if ($state eq $presentState) {
+        say STDOUT 'Proxy mode is already ' . $state . 'd.';
+        exit;
+    }
+
+    # Open the Apache port configuration for adjustments. 
+    open (my $fh, '+<', $file_path or die "Could not open file '$targetFile' $!";
+    my $fileContent = do { my $/; <$fh> };
+    $fileContent =~ s/\b($ports->{$presentState}|$SSLports->{$presentState})\b/($1 eq $ports->{$presentState}) ? $ports->{$state} : $SSLports->{$state}/ge;
+
+    print $fileContent
+
+    # seek($fh, 0, 0);
+    # print $fh $file_content;
+    # truncate($fh, tell($fh));
+    close($fh);
+
     exit;
 
     # Replace 80 with 81, 443 with 444 in the file
