@@ -266,7 +266,6 @@ sub proxyControl {
     my $currentlyEnabled = 0;
     my $currentlyDisabled = 0;   
     foreach my $directive (@listen_directives) {
-        say STDOUT 'Directive: ' . $directive->[0];
         $currentlyEnabled = 1 if ($directive->[0] =~ /(?:\:|^)(?:81|444)/);
         $currentlyDisabled = 1 if ($directive->[0] =~ /(?:\:|^)(?:80|443)/);
     }
@@ -274,8 +273,6 @@ sub proxyControl {
     # If we find both port sets enabled, at least in part, we can't proceed automatically.
     if (($currentlyEnabled and $currentlyDisabled) or (! $currentlyEnabled and ! $currentlyDisabled)) {
         say STDOUT "A mix of proxy port modes are currently enabled. Unable to proceed with automatic proxy configuration.";
-        say STDOUT "currentlyEnabled: $currentlyEnabled";
-        say STDOUT "currentlyDisabled: $currentlyDisabled";
         exit;
     }
 
@@ -289,7 +286,7 @@ sub proxyControl {
     # Open the Apache port configuration for adjustments. 
     open (my $fh, '+<', $targetFile) or die "Could not open file '$targetFile' $!";
     my $fileContent = do { local $/; <$fh> };
-    $fileContent =~ s/(?:\:| )($ports->{$presentState}|$SSLports->{$presentState})/($1 eq $ports->{$presentState}) ? $ports->{$targetState} : $SSLports->{$targetState}/ge;
+    $fileContent =~ s/(\:| )($ports->{$presentState}|$SSLports->{$presentState})/$1 . ($2 eq $ports->{$presentState}) ? $ports->{$targetState} : $SSLports->{$targetState}/ge;
 
     print $fileContent;
 
