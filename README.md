@@ -68,7 +68,7 @@ You should ordinarily use `syncNginxProxy.pl --enable-proxy` to accomplish the f
 
 ## Donations
 
-Is this tool helpful to you? It is free to use, but a donation to the non-profit I serve at, which is also the primary user that makes development of this script possible, FaithTree Christian Fellowship, Inc., is certainly appreciated. FaithTree is a 501(C)(3) organization and donations are tax deductable in the United States. You can donate here: https://faithtree.com/sa805 . Thank you!
+Is this tool helpful to you? It is free to use, but if you'd like to say "thank you" and support further development, sending a few bucks to @faithtree on Venmo, timothy.butler@faithtree.com on PayPal, or [making a donation on the FaithTree web site](https://faithtree.com/sa805) is deeply appreciated. Anything you send will be tax deductible in the United States as a gift to FaithTree Christian Fellowship, Inc., an IRS 501(c)(3) non-profit organization.
 
 ## License
 
