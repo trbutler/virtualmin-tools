@@ -135,13 +135,7 @@ if ($modification) {
     my $deleteResult = &clearProxy($target);
 
     # Restart NGINX
-    my $result = system('service nginx restart');
-
-    if ($result == 0) {
-        say STDOUT "NGINX restarted successfully.";
-    } else {
-        say STDOUT "Failed to restart NGINX.";
-    }
+    &nginxControl('restart');
 }
 
 sub create {
@@ -301,12 +295,11 @@ sub proxyControl {
 
         # Restart processes in proper order.
         system('systemctl restart apache2');
-        system('systemctl start nginx');
-        system('systemctl enable nginx');
-    } else {
+        &nginxControl('enable');
+    } 
+    else {
         # Stop NGINX and disable it, then return Apache to normal ports.
-        system('service nginx stop');
-        system('systemctl disable nginx');
+        &nginxControl('disable');
         system('systemctl restart apache2');
     }
 
@@ -334,7 +327,50 @@ sub updatePort {
 # Maintenance 
 sub clearProxyCache {
     my $target = shift;
-    return system('rm -rf /var/cache/nginx/proxy/' . $target . '/*');
+    system('rm -rf /var/cache/nginx/proxy/' . $target . '/*');
+    if ($?) {
+        &nginxControl('restart');
+        return 1;
+    } else {
+        return 0;
+    }
+
+}
+
+sub nginxControl {
+    my $command = shift;
+
+    # Check to make sure command is start, stop, or restart.
+    if ($command !~ /^(start|stop|restart|reload|disable|enable)$/) {
+        say STDOUT "Invalid command requested for NGINX server. Must be start, stop, restart, reload, disable or enable.";
+        return 0;
+    }
+
+    system('systemctl ' . $command . ' nginx');
+
+    if ($?) {
+        $command = ($command eq 'stop') ? 'stopp' : $command;
+        say STDOUT "NGINX " . $command . "ed successfully.";
+
+        # For enable/disable also start or stop the service if needed.
+        if ($command =~ /^(enable|disable)$/) {
+            # Check to see if nginx is running
+            my $nginxStatus = `systemctl is-active nginx`;
+            
+            if (($nginxStatus eq 'active') and ($command eq 'disable')) {
+                &nginxControl('stop');
+            }
+            elsif (($nginxStatus eq 'inactive') and ($command eq 'enable')) {
+                &nginxControl('start');
+            }
+        }
+
+        return 1;
+    } 
+    else {
+        say STDOUT "Failed to " . $command . " NGINX.";
+        return 0;
+    }
 }
 
 # Bulk Subroutines
