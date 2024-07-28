@@ -132,7 +132,7 @@ elsif ($delete) {
 # See if we need to restart NGINX
 if ($modification) {
     # Clear Proxy Cache
-    my $deleteResult = &clearProxy($target);
+    my $deleteResult = &clearProxyCache($target);
 
     # Restart NGINX
     &nginxControl('restart');
