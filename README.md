@@ -72,4 +72,4 @@ Is this tool helpful to you? It is free to use, but a donation to the non-profit
 
 ## License
 
-Copyright (C) 2004 Universal Networks, LLC. This program comes with ABSOLUTELY NO WARRANTY; for details see the file LICENSE. This is free software, and you are welcome to redistribute it under the conditions in the LICENSE file.
+Copyright (C) 2024 Universal Networks, LLC. This program comes with ABSOLUTELY NO WARRANTY; for details see the file LICENSE. This is free software, and you are welcome to redistribute it under the conditions in the LICENSE file.
