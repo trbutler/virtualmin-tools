@@ -32,7 +32,7 @@ my $apachePath = {
     'sitesEnabled' => '/etc/apache2/sites-enabled/'
 };
 
-my $templateDirectory = $Bin . '/templates/';
+my $templateDirectory = 'templates/';
 
 # Set parameters
 my ($enableProxy, $disableProxy, $target, $parentTarget, $targetAll, $rebuild, $clearCache, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
