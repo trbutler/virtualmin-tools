@@ -83,7 +83,7 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
     $virtualmin = 1;
 }
 
-unless $virtualmin {
+unless ($virtualmin) {
     # Add copyright notice and GPL commandline summary when not in Virtualmin.
     say STDOUT "syncNginxProxy - Copyright (C) 2024 Universal Networks, LLC. <https://uninetsolutions.com>";
     say STDOUT "This program comes with ABSOLUTELY NO WARRANTY. You may redistribute it under the terms of the GNU GPL v. 3.\n";
