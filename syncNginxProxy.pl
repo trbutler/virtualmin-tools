@@ -48,10 +48,6 @@ GetOptions ("enable-proxy" 			=> \$enableProxy,
             "no-ssl|u"              => \$noSSL,           
             "test"                  => \$test );
 
-# Add GPL commandline summary.
-say STDOUT "syncNginxProxy - Copyright (C) 2024 Universal Networks, LLC. <https://uninetsolutions.com>";
-say STDOUT "This program comes with ABSOLUTELY NO WARRANTY. You may redistribute it under the terms of the GNU GPL v. 3.\n";
-
 # Enable or disable proxy.
 my $proxyControlMode = ($enableProxy) ? 'enable' : ($disableProxy) ? 'disable' : '';
 if ($proxyControlMode) {
@@ -84,7 +80,15 @@ if ($ENV{'VIRTUALSERVER_ACTION'}) {
     $create //= (any { $_ eq $ENV{'VIRTUALSERVER_ACTION'} } qw(CREATE_DOMAIN MODIFY_DOMAIN CLONE_DOMAIN ENABLE_DOMAIN SSL_DOMAIN)) ? 1 : 0;
     $target //= $ENV{'VIRTUALSERVER_DOM'};
     $parentTarget //= $ENV{'PARENT_DOMAIN_DOM'};
+    $virtualmin = 1;
 }
+
+unless $virtualmin {
+    # Add copyright notice and GPL commandline summary when not in Virtualmin.
+    say STDOUT "syncNginxProxy - Copyright (C) 2024 Universal Networks, LLC. <https://uninetsolutions.com>";
+    say STDOUT "This program comes with ABSOLUTELY NO WARRANTY. You may redistribute it under the terms of the GNU GPL v. 3.\n";
+}
+
 
 # If we don't have options set, output help description of options and exit.
 unless ($target and ($create or $delete)) {
