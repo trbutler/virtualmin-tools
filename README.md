@@ -30,6 +30,14 @@ To enable automatic operation in Virtualmin upon creation or modification of a s
 
 The command to enter into that box will vary depending on where you pulled this repository to. For example, if you placed the repository in `/opt/`, the path would be `/opt/virtualmin-tools/syncNginxProxy.pl`. 
 
+## Recommended System 
+
+- Debian 12 ("Bookworm") - the tool may work out of the box with other distributions using similar configuration file layout, but has only been tested with Debian. Further distribution support should be added in the future.
+
+- Virtualmin with LAMP install - if you intend to use the tool with Virtualmin, start with the LAMP version of Virtualmin, not the LEMP version. 
+
+- NGINX installed directly from the distribution after Virtualmin installation.
+
 ## Apache and NGINX configuration
 
 - Install NGINX on your server
