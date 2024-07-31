@@ -56,6 +56,15 @@ You should ordinarily use `syncNginxProxy.pl --enable-proxy` to accomplish the f
 
 - Enable NGINX for subsequent reboots by typing `systemctl enable nginx`.
 
+## Templates
+Configuration for each virtual server is handled by a series of templates in the `templates/` directory. Further, standard configuration settings are in the `includes/` directory, including optimizations for serving certain static content (such as images) directly via NGINX rather than proxying to Apache.
+
+You can further optimize image serving using these standard templates by placing your site's images into an `images` subdirectory and alternate, optimized image forms within `images/.optimized` directory. If a WebP or more highly optimized JPEG image is placed into that latter directory with the requested image's name *plus* the appropriate extension, NGINX will serve the optimized version to compatible clients.
+
+For example: if the user requests `/images/logo.gif` and `/images/.optimized/logo.gif.webp` exists, the server will provide the latter to any client that supports WebP. 
+
+Using a script to regularly scan `/images/` directories and create the optimized forms in that hidden subfolder is an efficient way to utilize this functionality. Such a script may be included in a future version of this tool distribution and is included in the upcoming rerelease of our free and open source CMS platform.
+
 ## Errata 
 
 - The script does not yet respond to being invoked specifically for alias modification. It does seem to be updating as the parent server is changed to reflect alias modifications, so perhaps adding it to "Command to run after making changes to an alias" is unnecessary?
