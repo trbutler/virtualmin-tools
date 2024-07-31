@@ -59,6 +59,10 @@ You should ordinarily use `syncNginxProxy.pl --enable-proxy` to accomplish the f
 ## Templates
 Configuration for each virtual server is handled by a series of templates in the `templates/` directory. Further, standard configuration settings are in the `includes/` directory, including optimizations for serving certain static content (such as images) directly via NGINX rather than proxying to Apache.
 
+### Per-Site Configuration
+The default template looks in `/etc/nginx/sites-enabled/[server name]/` for any `.conf` files that coudl be included. One should expect the main configuration for each virtual server (e.g. `/etc/nginx/sites-enabled/[server name].conf`) will be overwritten on a regular basis, so site specific changes not appropriate for changing the global templates, should go in files placed in that subdirectory.
+
+### Image Optimizations
 You can further optimize image serving using these standard templates by placing your site's images into an `images` subdirectory and alternate, optimized image forms within `images/.optimized` directory. If a WebP or more highly optimized JPEG image is placed into that latter directory with the requested image's name *plus* the appropriate extension, NGINX will serve the optimized version to compatible clients.
 
 For example: if the user requests `/images/logo.gif` and `/images/.optimized/logo.gif.webp` exists, the server will provide the latter to any client that supports WebP. 

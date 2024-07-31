@@ -62,7 +62,7 @@ server {
 
     include [% programPath %]/includes/basicProxy.conf;
     include [% programPath %]/includes/staticNonProxy.conf;
-    include [% TargetConfig %]/*;
+    include [% TargetConfig %]/*.conf;
 }
 
 [% IF ssl_certificate %]

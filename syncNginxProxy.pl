@@ -396,7 +396,7 @@ sub bulkModify {
     foreach (@{ $directoryTargets }) {
         opendir(DIR, $_) or die $!;
         while (my $file = readdir(DIR)) {
-            next if ($file eq '.' or $file eq '..');
+            next if (($file eq '.') or ($file eq '..') or (-d $file));
             $target = $file =~ s/\.conf$//r;
             &$subroutine($target);
         }
