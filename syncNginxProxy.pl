@@ -332,7 +332,7 @@ sub updatePort {
 sub clearProxyCache {
     my $target = shift;
     system('rm -rf /var/cache/nginx/proxy/' . $target . '/*');
-    if ($?) {
+    if (! $?) {
         &nginxControl('restart');
         return 1;
     } else {
@@ -352,7 +352,7 @@ sub nginxControl {
 
     system('systemctl ' . $command . ' nginx');
 
-    if ($?) {
+    if (! $?) {
         $command = ($command eq 'stop') ? 'stopp' : $command;
         say STDOUT "NGINX " . $command . "ed successfully.";
 
