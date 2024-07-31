@@ -35,7 +35,7 @@ my $apachePath = {
 my $templateDirectory = 'templates/';
 
 # Set parameters
-my ($enableProxy, $disableProxy, $target, $parentTarget, $targetAll, $rebuild, $clearCache, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
+my ($enableProxy, $disableProxy, $target, $parentTarget, $targetAll, $rebuild, $clearCache, $create, $delete, $noSSL, $test, $modification, $ipsInUse, $virtualmin);
 
 GetOptions ("enable-proxy" 			=> \$enableProxy,
             "disable-proxy" 		=> \$disableProxy,
