@@ -61,7 +61,7 @@ server {
     [% END %]
 
     include [% programPath %]/includes/basicProxy.conf;
-    include [% programPath %]/includes/nginxOptimizations.conf;
+    include [% programPath %]/includes/staticNonProxy.conf;
     include [% TargetConfig %]/*;
 }
 

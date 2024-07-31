@@ -26,11 +26,15 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
+# Key file locations
 my $apachePath = {
     'sitesAvailable' => '/etc/apache2/sites-available/',
     'sitesEnabled' => '/etc/apache2/sites-enabled/'
 };
 
+my $templateDirectory = $Bin . '/templates/';
+
+# Set parameters
 my ($enableProxy, $disableProxy, $target, $parentTarget, $targetAll, $rebuild, $clearCache, $create, $delete, $noSSL, $test, $modification, $ipsInUse);
 
 GetOptions ("enable-proxy" 			=> \$enableProxy,
