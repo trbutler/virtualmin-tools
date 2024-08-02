@@ -46,7 +46,7 @@ The command to enter into that box will vary depending on where you pulled this 
 
 - Run `syncNginxProxy.pl --enable-proxy` to initialize configuration, including moving Apache to private ports accessible to NGINX, but not to the public. *Note: if you are already using non-standard ports, you must complete this step manually instead, see "Manually Apache Configuration" below.*
 
-- Under Virtualmin -> Server Templates -> Default Settings -> Website for domain, modify "Port number for virtual hosts" to 81 and "Port number for SSL virtual hosts" to 444.
+- Under Virtualmin -> Server Templates -> Default Settings -> Website for domain, modify "Port number for virtual hosts" to `81` and "Port number for SSL virtual hosts" to `444`. Meanwhile, set "External port number for virtual hosts" to `80` and "External port number for SSL virtual hosts" to `443`.
 
 ## Manual Apache Configuration
 
@@ -84,8 +84,6 @@ Using a script to regularly scan `/images/` directories and create the optimized
 - A function to completely disable the proxy when trying to create SSL certificates from Let's Encrypt may be necessary. Still trying to determine if this is necessary.
 
 - The cache key setting may need to be tweaked.
-
-- The Virtualmin webapp installer and other parts of the interface link to the ports (that should be inaccessible externally) 81 and 444, rather than the proxied ports 80 and 443.
 
 ## Donations
 
