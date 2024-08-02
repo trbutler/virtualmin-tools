@@ -39,6 +39,8 @@ $configurationFile = (-e File::HomeDir->my_home . '/.syncNginxProxy') ? File::Ho
 my %config;
 Config::Simple->import_from($configurationFile, \%config);
 say STDERR "Loading configuration file: $configurationFile";
+use Data::Dumper;
+say STDERR Dumper(\%config);
 
 # Key file locations
 my $apachePath = {
