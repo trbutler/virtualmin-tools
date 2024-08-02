@@ -393,6 +393,7 @@ sub nginxControl {
                 &nginxControl('stop');
             }
             elsif (($nginxStatus eq 'inactive') and ($command eq 'enable')) {
+                &checkCoreConfig;
                 &nginxControl('start');
             }
         }
@@ -402,6 +403,15 @@ sub nginxControl {
     else {
         say STDOUT "Failed to " . $command . " NGINX.";
         return 0;
+    }
+}
+
+sub checkCoreConfig {
+    # See if we have a symlink to the httpBlockCustomizations.conf file.
+    my $upstreamConfigPath = $nginxPath->{'configBase'} . 'upstreamConfig/';
+ 
+    unless (-l $upstreamConfigPath . 'httpBlockCustomizations.conf') {
+        symlink $Bin . '/includes/httpBlockCustomizations.conf', $upstreamConfigPath . 'httpBlockCustomizations.conf' or die "Failed to create symlink: $!";
     }
 }
 
