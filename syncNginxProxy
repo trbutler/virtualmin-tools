@@ -38,21 +38,18 @@ $configurationFile = (-e File::HomeDir->my_home . '/.syncNginxProxy') ? File::Ho
 
 my %config;
 Config::Simple->import_from($configurationFile, \%config);
-say STDERR "Loading configuration file: $configurationFile";
-use Data::Dumper;
-say STDERR Dumper(\%config);
 
 # Key file locations
 my $apachePath = {
-    'configBase' => $config{'httpd_dir'},
-    'sitesAvailable' => $config{'virt_file'}, 
-    'sitesEnabled' => $config{'link_dir'} 
+    'configBase' => $config{'httpd_dir'} . '',
+    'sitesAvailable' => $config{'virt_file'} . '/', 
+    'sitesEnabled' => $config{'link_dir'}  . '/'
 };
 
 my $nginxPath = {
-    'configBase' => $config{'proxy_httpd_dir'}, 
-    'sitesAvailable' => $config{'proxy_virt_file'},
-    'sitesEnabled' => $config{'proxy_link_dir'}
+    'configBase' => $config{'proxy_httpd_dir'} . '/',
+    'sitesAvailable' => $config{'proxy_virt_file'} . '/',
+    'sitesEnabled' => $config{'proxy_link_dir'} . '/'
 };
 
 my $templateDirectory = 'templates/';
