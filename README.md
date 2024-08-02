@@ -32,7 +32,10 @@ The command to enter into that box will vary depending on where you pulled this 
 
 ## Recommended System 
 
-- Debian 12 ("Bookworm") - the tool may work out of the box with other distributions using similar configuration file layout, but has only been tested with Debian. Further distribution support should be added in the future.
+- Debian 12 ("Bookworm") - the tool may work out of the box with other distributions using similar configuration file layout, but has only been tested with Debian. 
+
+    - Official support for other distributions is planned for the future.
+    - Paths can be customized to suit another distribution by copying `syncNginxProxy.conf` to `/etc/` and changing the paths in the copy placed there. Variable names in the configuration file mirror those of Webmin's `/etc/webmin/apache/config`.
 
 - Virtualmin with LAMP install - if you intend to use the tool with Virtualmin, start with the LAMP version of Virtualmin, not the LEMP version. 
 
