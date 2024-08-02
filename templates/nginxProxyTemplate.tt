@@ -5,14 +5,19 @@ server {
     root [% root %];
     index index.html index.htm;
 
+    # Virtualmin Redirects
     # Redirect for admin
     if ($host = admin.[% TargetConfig %]) {
-        return 301 https://[% TargetConfig %]:10000$request_uri;
+        if ($request_uri !~* ^/\/\.well-known/) {
+            return 301 https://[% TargetConfig %]:10000$request_uri;
+        }
     }
 
     # Redirect for webmail
     if ($host = webmail.[% TargetConfig %]) {
-        return 301 https://[% TargetConfig %]:20000$request_uri;
+         if ($request_uri !~* ^/\/\.well-known/) {       
+            return 301 https://[% TargetConfig %]:20000$request_uri;
+        }
     }
 
     location /controlpanel {
