@@ -170,6 +170,13 @@ sub create {
         unless ($noSSL) {
             $parameters->{'ssl_certificate'} //= $vhost->cmd_config('SSLCertificateFile');
             $parameters->{'ssl_certificate_key'} //= $vhost->cmd_config('SSLCertificateKeyFile');
+
+            # Check for fullchain certificate if using only cert.pem (a.k.a. ssl.cert).
+            if ($parameters->{'ssl_certificate'} =~ /(cert\.pem|ssl\.cert)$/) {
+                # Does the fullchain exist?
+                my $fullchain = $parameters->{'ssl_certificate'} =~ s/(cert\.pem|ssl\.cert)$/$1 eq 'ssl.cert' ? 'ssl.combined' : 'fullchain.pem'/e;
+                $parameters->{'ssl_certificate'} = $fullchain if (-e $fullchain);
+           }
         }
     } 
 
