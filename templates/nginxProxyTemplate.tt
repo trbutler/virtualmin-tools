@@ -15,6 +15,10 @@ server {
         return 301 https://[% TargetConfig %]:20000$request_uri;
     }
 
+    location /controlpanel {
+        return 301 https://[% TargetConfig %]:10000;
+    }
+
     location / {
         proxy_cache [% TargetConfig %];
         proxy_no_cache 0;

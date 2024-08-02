@@ -26,10 +26,30 @@ use List::Util qw(any);
 use FindBin qw($Bin);
 use File::Path qw(make_path);
 
+# Get configuration file
+use Config::Simple;
+use File::HomeDir;
+
+my $configurationFile;
+$configurationFile = (-e File::HomeDir->my_home . '/.syncNginxProxy') ? File::HomeDir->my_home . "/.syncNginxProxy" :
+                    (-e '/etc/syncNginxProxy.conf') ? "/etc/syncNginxProxy.conf" :
+                    (-e $Bin . '/syncNginxProxy.conf') ? $Bin . '/syncNginxProxy.conf' :
+                    die "No configuration file found.";
+
+my %config;
+Config::Simple->import_from($configurationFile, \%config);
+
 # Key file locations
 my $apachePath = {
-    'sitesAvailable' => '/etc/apache2/sites-available/',
-    'sitesEnabled' => '/etc/apache2/sites-enabled/'
+    'configBase' => $config{'httpd_dir'},
+    'sitesAvailable' => $config{'virt_file'}, 
+    'sitesEnabled' => $config{'link_dir'} 
+};
+
+my $nginxPath = {
+    'configBase' => $config{'proxy_httpd_dir'}, 
+    'sitesAvailable' => $config{'proxy_virt_file'},
+    'sitesEnabled' => $config{'proxy_link_dir'}
 };
 
 my $templateDirectory = 'templates/';
@@ -113,11 +133,11 @@ unless ($target and ($create or $delete)) {
 die "No target specified" unless $target;
 
 # See if file exists.
-unless (-e '/etc/apache2/sites-available/' . $target . '.conf') {
+unless (-e $apachePath->{'sitesAvailable'} . $target . '.conf') {
     # Do we have a parent target?
     if ($parentTarget) {
         $target = $parentTarget;
-        if (-e '/etc/apache2/sites-available/' . $target . '.conf') {
+        if (-e $apachePath->{'sitesAvailable'} . $target . '.conf') {
             say STDOUT "Using parent server as target: " . $target;
         }
         else {
@@ -152,7 +172,7 @@ sub create {
     $parameters->{'programPath'} = $Bin;
 
     # Use the Apache::ConfigFile module to parse the Apache configuration file
-    my $apacheConfig = Apache::ConfigFile->read('/etc/apache2/sites-enabled/' . $parameters->{'TargetConfig'} . '.conf');
+    my $apacheConfig = Apache::ConfigFile->read($apachePath->{'sitesEnabled'} . $parameters->{'TargetConfig'} . '.conf');
 
     for my $vh ($apacheConfig->cmd_context('VirtualHost')) {
         $parameters->{'ip'} //= $vh =~ s/:[0-9]+$//r;
@@ -196,18 +216,18 @@ sub create {
         return 0;
     } else {
         # Main template
-        $template->process($templateDirectory . 'nginxProxyTemplate.tt', $parameters, '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'} . '.conf') || die $template->error();
+        $template->process($templateDirectory . 'nginxProxyTemplate.tt', $parameters, $nginxPath->{'sitesAvailable'} . $parameters->{'TargetConfig'} . '.conf') || die $template->error();
         say STDOUT "Nginx configuration file created or modified successfully.";
 
         # Create symbolic link
-        symlink '/etc/nginx/sites-available/' . $parameters->{'TargetConfig'} . '.conf', '/etc/nginx/sites-enabled/' . $parameters->{'TargetConfig'} . '.conf';
+        symlink $nginxPath->{'sitesAvailable'} . $parameters->{'TargetConfig'} . '.conf', $nginxPath->{'sitesEnabled'} . $parameters->{'TargetConfig'} . '.conf';
 
         # Save IP proxy config template.
         unless ($ipsInUse->{ $parameters->{'ip'} }) {
             $ipsInUse->{ $parameters->{'ip'} } = 1;
         
             # does the proxy upstream config directory exist?
-            my $upstreamConfigPath = '/etc/nginx/upstreamConfig/';
+            my $upstreamConfigPath = $nginxPath->{'configBase'} . 'upstreamConfig/';
             unless (-d $upstreamConfigPath) {
                 make_path($upstreamConfigPath) or die "Failed to create path: $upstreamConfigPath";
             }
@@ -222,7 +242,7 @@ sub create {
 sub delete {
     my $target = shift;
 
-    if (!-e '/etc/nginx/sites-available/' . $target . '.conf') {
+    if (!-e $nginxPath->{'sitesAvailable'} . $target . '.conf') {
         say STDOUT "Nginx configuration file doesn't exist.";
         return 0;
     }
@@ -231,11 +251,11 @@ sub delete {
         return 0;
     }
     else {
-        unlink '/etc/nginx/sites-available/' . $target . '.conf';
+        unlink $nginxPath->{'sitesAvailable'} . $target . '.conf';
 
         # Delete symbolic link, too.
-        if (-e '/etc/nginx/sites-enabled/' . $target . '.conf') {
-            unlink '/etc/nginx/sites-enabled/' . $target . '.conf';
+        if (-e $nginxPath->{'sitesEnabled'} . $target . '.conf') {
+            unlink $nginxPath->{'sitesEnabled'} . $target . '.conf';
         }
 
         # Remove cache
@@ -250,7 +270,7 @@ sub proxyControl {
     my ($targetState, $test) = @_;
     my $ports = { 'enable' => 81, 'disable' => 80 };
     my $SSLports = { 'enable' => 444, 'disable' => 443 };
-    my $targetFile = '/etc/apache2/ports.conf';
+    my $targetFile = $apachePath->{'configBase'} . 'ports.conf';
  
     # Open the Apache listen configuration file for reading
     my $apacheConfig = Apache::ConfigFile->read($targetFile);
@@ -387,12 +407,12 @@ sub nginxControl {
 
 # Bulk Subroutines
 sub createAll {
-    my $directoryTargets = [ '/etc/apache2/sites-enabled/' ];
+    my $directoryTargets = [ $apachePath->{'sitesEnabled'} ];
     &bulkModify($directoryTargets, \&create);
 }
 
 sub deleteAll {
-    my $directoryTargets = [ '/etc/nginx/sites-enabled/', '/etc/nginx/sites-available/' ];
+    my $directoryTargets = [ $nginxPath->{'sitesEnabled'}, $nginxPath->{'sitesAvailable'} ];
     &bulkModify($directoryTargets, \&delete);
 }
 
