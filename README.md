@@ -1,7 +1,7 @@
 # virtualmin-tools
 Tools to extend Virtualmin for easing migration from cPanel/WHM
 
-## syncNginxProxy.pl
+## syncNginxProxy
 This tool is designed to be run every time Virtualmin modifies or creates a server in order to keep NGINX updated as a reverse proxy. It can also be run manually to recreate one or all proxy records for NGINX.
 
 The script accepts the following command-line options for direct operation:
@@ -28,7 +28,7 @@ The script accepts the following command-line options for direct operation:
 
 To enable automatic operation in Virtualmin upon creation or modification of a server, syncNginxProxy can be invoked from "Virtualmin Configuration" --> "Actions upon server and user configuration" --> "Command to run after making changes to a server."
 
-The command to enter into that box will vary depending on where you pulled this repository to. For example, if you placed the repository in `/opt/`, the path would be `/opt/virtualmin-tools/syncNginxProxy.pl`. 
+The command to enter into that box will vary depending on where you pulled this repository to. For example, if you placed the repository in `/opt/`, the path would be `/opt/virtualmin-tools/syncNginxProxy`. 
 
 ## Recommended System 
 
@@ -44,13 +44,13 @@ The command to enter into that box will vary depending on where you pulled this 
 
     - Add `include /etc/nginx/upstreamConfig/*;` to your NGINX http block in `/etc/nginx/nginx.conf`.
 
-- Run `syncNginxProxy.pl --enable-proxy` to initialize configuration, including moving Apache to private ports accessible to NGINX, but not to the public. *Note: if you are already using non-standard ports, you must complete this step manually instead, see "Manually Apache Configuration" below.*
+- Run `syncNginxProxy --enable-proxy` to initialize configuration, including moving Apache to private ports accessible to NGINX, but not to the public. *Note: if you are already using non-standard ports, you must complete this step manually instead, see "Manually Apache Configuration" below.*
 
 - Under Virtualmin -> Server Templates -> Default Settings -> Website for domain, modify "Port number for virtual hosts" to `81` and "Port number for SSL virtual hosts" to `444`. Meanwhile, set "External port number for virtual hosts" to `80` and "External port number for SSL virtual hosts" to `443`.
 
 ## Manual Apache Configuration
 
-You should ordinarily use `syncNginxProxy.pl --enable-proxy` to accomplish the following, but if there are non-standard configuration elements hindering the automated process, here are the steps for preparing Apache for the proxy configuration:
+You should ordinarily use `syncNginxProxy --enable-proxy` to accomplish the following, but if there are non-standard configuration elements hindering the automated process, here are the steps for preparing Apache for the proxy configuration:
 
 - Adjust Apache to listen on ports 81 and 444 by replacing the `Listen` directives in `/etc/apache2/ports.conf` for 80 and 443 to 81 and 444, respectively. (These ports should **not** be opened on your firewall, these are purely for NGINX to access).
 
@@ -58,7 +58,7 @@ You should ordinarily use `syncNginxProxy.pl --enable-proxy` to accomplish the f
 
 - Restart Apache using `systemctl restart apache2`.
 
-- Build the NGINX proxy configuration for all sites using `syncNginxProxy.pl -a`.
+- Build the NGINX proxy configuration for all sites using `syncNginxProxy -a`.
 
 - Start NGINX using `systemctl start nginx`. 
 
