@@ -51,6 +51,8 @@ The command to enter into that box will vary depending on where you pulled this 
 
 - Under Virtualmin -> Server Templates -> Default Settings -> Website for domain, modify "Port number for virtual hosts" to `81` and "Port number for SSL virtual hosts" to `444`. Meanwhile, set "External port number for virtual hosts" to `80` and "External port number for SSL virtual hosts" to `443`.
 
+- Under Virtualmin -> Virtualmin Configuration -> Actions upon server and user creation, set "Command to run after making changes to a server" to the path to syncNginxProxy (for example, if you unpacked this tool in `/opt/virtualmin-tools/`, then the location would be `/opt/virtualmin-tools/syncNginxProxy`). Do the same for "Coammnd to run after making changes to an alias."
+
 ## Manual Apache Configuration
 
 You should ordinarily use `syncNginxProxy --enable-proxy` to accomplish the following, but if there are non-standard configuration elements hindering the automated process, here are the steps for preparing Apache for the proxy configuration:
