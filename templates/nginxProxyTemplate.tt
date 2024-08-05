@@ -7,11 +7,11 @@ server {
 
     # Virtualmin Redirects
     if ($shouldRedirect) {
-        return 301 https://[% TargetConfig %]:$shouldRedirect$request_uri;
+        return 301 $scheme://[% TargetConfig %]:$shouldRedirect$request_uri;
     }
 
     location /controlpanel {
-        return 301 https://[% TargetConfig %]:10000;
+        return 301 $scheme://[% TargetConfig %]:10000;
     }
 
     location / {
